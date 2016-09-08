@@ -31,75 +31,7 @@ void print_help(void) {
 	exit(0);
 }
 
-int window_compare_dir(Window window1, Window window2, int *direction, int *dist) {
-
-	/* Get center-of-window coordinates for first window */
-	XWindowAttributes window1_attrib;
-	XGetWindowAttributes(dpy, window1, &window1_attrib);
-	int window1_center_x = window1_attrib.x + (window1_attrib.width / 2);
-	int window1_center_y = window1_attrib.y + (window1_attrib.height / 2);
-
-	/* Get center-of-window coordinates for first window */
-	XWindowAttributes window2_attrib;
-	XGetWindowAttributes(dpy, window2, &window2_attrib);
-	int window2_center_x = window2_attrib.x + (window2_attrib.width / 2);
-	int window2_center_y = window2_attrib.y + (window2_attrib.height / 2);
-
-	int diff_x = window1_center_x - window2_center_x;
-	int diff_y = window1_center_y - window2_center_y;
-
-
-	/*
-	 * If the difference in the y between the 2 windows is greater than the
-	 * difference in the x then the second window is located in either the
-	 * NORTH or SOUTH cardinal direction.
-	 */
-	if (abs(diff_y) > abs(diff_x)) {
-		/* If the y diff is positive. The cardinal direction is north */
-		if (diff_y > 0) {
-			*direction = NORTH;
-			*dist = (int) sqrt((double) (diff_y * diff_y) + (double) (diff_x * diff_x));
-			return 0;
-		}
-		else if (diff_y < 0) {
-			*direction = SOUTH;
-			*dist = (int) sqrt((double) (diff_y * diff_y) + (double) (diff_x * diff_x));
-			return 0;
-		}
-		/* Should never be triggered but is here for completion's sake */
-		else {
-			*direction = -1;
-			*dist = (int) sqrt((double) (diff_y * diff_y) + (double) (diff_x * diff_x));
-			return -1;
-		}
-	}
-	/*
-	 * If the difference in the x between the 2 windows is greater than or
-	 * equal the difference in the y then the second window is located in either the
-	 * EAST or WEST cardinal direction.
-	 */
-	else {
-		/* If the x diff is positive. The cardinal direction is west */
-		if (diff_x > 0) {
-			*direction = WEST;
-			*dist = (int) sqrt((double) (diff_y * diff_y) + (double) (diff_x * diff_x));
-			return 0;
-		}
-		else if (diff_x < 0) {
-			*direction = EAST;
-			*dist = (int) sqrt((double) (diff_y * diff_y) + (double) (diff_x * diff_x));
-			return 0;
-		}
-		/* Triggered if the 2 windows have centers of the same coordinates */
-		else {
-			*direction = AMBIGUOUS;
-			*dist = (int) sqrt((double) (diff_y * diff_y) + (double) (diff_x * diff_x));
-			return 0;
-		}
-	}
-}
-
-int get_closest_dir(Window *closest_return, int dir) {
+int get_closest_win_in_dir(Window *closest_return, int dir) {
 
 	if (!(dpy = XOpenDisplay(0))) {
 		exit(1);
@@ -112,44 +44,73 @@ int get_closest_dir(Window *closest_return, int dir) {
 		Window *children_return;
 		unsigned int number_children;
 		/* Get currently focused window for comparison. */
-		Window currently_focused;
+		Window current_window;
 		int focus_status;
-		XGetInputFocus(dpy, &currently_focused, &focus_status);
+		XGetInputFocus(dpy, &current_window, &focus_status);
 		/* Get a list of all the windows in X session*/
 		XQueryTree(dpy, w, &root_return, &parent_return, &children_return, \
 			&number_children);
 		int closest_dist = INT_MAX;
 		int closest_window = -1;
-	
+		XWindowAttributes cur_win_attrib;
+		XGetWindowAttributes(dpy, current_window, &cur_win_attrib);
+
 		/* Go through list of windows */
 		for (int i = 0; i < number_children; i++) {
 			Window temp_window = *(children_return + i);
-			XWindowAttributes attrib;
-			XGetWindowAttributes(dpy, temp_window, &attrib);
-	
+			XWindowAttributes temp_win_attrib;
+			XGetWindowAttributes(dpy, temp_window, &temp_win_attrib);
+
 			/* If the window is mapped (visible) */
-			if (attrib.map_state == 2 && temp_window != currently_focused) {
-				int distance;
-				int compare_dir;
-				// Get whether window is up, down, left or right
-				int temp_window_dir;
-				window_compare_dir(currently_focused, temp_window, \
-					&temp_window_dir, &distance);
-					// printf("%dx%x \n", temp_window_dir, temp_window);
-				
-				if (temp_window_dir == dir) {
-					// printf("---%x temp_window dir vs dir %d %d\n", temp_window, temp_window_dir, dir);
-					/* If this is the closest window it's come across so far */
-					if (distance < closest_dist) {
-						// printf("closer window in %d %x\n", temp_window_dir, temp_window);
-						/* Remember the closest window in the given direction */
-						closest_window = temp_window;
-						closest_dist = distance;
+			if (temp_win_attrib.map_state == 2 && temp_window != current_window) {
+
+				if (dir == EAST) {
+					// If the temp window is more easternly
+					if (temp_win_attrib.x > cur_win_attrib.x) {
+						// If the temp window is closer to the cur window
+						// than the current closest win in the given dir
+						if ((temp_win_attrib.x - cur_win_attrib.x) < closest_dist) {
+							closest_window = temp_window;
+							closest_dist = temp_win_attrib.x - cur_win_attrib.x;
+						}
+					}
+				}
+				if (dir == WEST) {
+					// If the temp window is more westernly
+					if (temp_win_attrib.x < cur_win_attrib.x) {
+						// If the temp window is closer to the cur window
+						// than the current closest win in the given dir
+						if ((cur_win_attrib.x - temp_win_attrib.x) < closest_dist) {
+							closest_window = temp_window;
+							closest_dist = cur_win_attrib.x - temp_win_attrib.x;
+						}
+					}
+				}
+				if (dir == SOUTH) {
+					// If the temp window is more southernly
+					if (temp_win_attrib.y > cur_win_attrib.y) {
+						// If the temp window is closer to the cur window
+						// than the current closest win in the given dir
+						if ((temp_win_attrib.y - cur_win_attrib.y) < closest_dist) {
+							closest_window = temp_window;
+							closest_dist = temp_win_attrib.y - cur_win_attrib.y;
+						}
+					}
+				}
+				if (dir == NORTH) {
+					// If the temp window is more northernly
+					if (temp_win_attrib.y < cur_win_attrib.y) {
+						// If the temp window is closer to the cur window
+						// than the current closest win in the given dir
+						if ((cur_win_attrib.y - temp_win_attrib.y) < closest_dist) {
+							closest_window = temp_window;
+							closest_dist = cur_win_attrib.y - temp_win_attrib.y;
+						}
 					}
 				}
 			}
 		}
-	
+
 		/* If there is any window in the given direction */
 		if (closest_window != -1) {
 			/* return the window id (in decimal) of the closest window */
@@ -157,7 +118,7 @@ int get_closest_dir(Window *closest_return, int dir) {
 			return 0;
 		}
 	}
-	
+
 	*closest_return = -1;
 	return 1;
 }
@@ -174,7 +135,7 @@ main(int argc, char **argv) {
 	/* If the call to wtfc has 2 WORDS (wtfc and the direction) */
 	if (argc == 2) {
 		Window closest_window_ret = -1;
-	
+
 		for (int j = 0; j < strlen(argv[1]); j++) {
 			switch (argv[1][j]) {
 				case 'u':
@@ -208,11 +169,12 @@ main(int argc, char **argv) {
 		if (cardinal == -1) {
 			printf("no valid direction given\n");
 			print_help();
+			return 1;
 		}
 		else {
-			get_closest_dir(&closest_window_ret, cardinal);
+			int win_in_dir_ret = get_closest_win_in_dir(&closest_window_ret, cardinal);
 			/* If there is any window in the given cardinal direction */
-			if (closest_window_ret != -1) {
+			if (win_in_dir_ret == 0) {
 				if (focus == 1) {
 					int s = XSetInputFocus(dpy, closest_window_ret, RevertToParent, CurrentTime);
 					XSync(dpy, False);
@@ -222,13 +184,14 @@ main(int argc, char **argv) {
 				printf("0x%08x\n", long_win_id);
 			}
 			else {
-				printf("no valid window found\n");
+				return 1;
 			}
 		}
 	}
 	else {
 		print_help();
+		return 1;
 	}
-	
+
 	return 0;
 }
