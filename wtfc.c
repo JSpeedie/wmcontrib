@@ -8,13 +8,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <xcb/xcb.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 Display *dpy;
 int focus = 0;
 int compatible = 0;
+
+/* Constants to represent the cardinal directions */
 int NORTH = 0;
 int EAST = 1;
 int SOUTH = 2;
@@ -65,10 +66,10 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 			if (temp_win_attrib.map_state == 2 && temp_window != current_window) {
 
 				if (dir == EAST) {
-					// If the temp window is more easternly
+					/* If the temp window is more easternly */
 					if (temp_win_attrib.x > cur_win_attrib.x) {
-						// If the temp window is closer to the cur window
-						// than the current closest win in the given dir
+						/* If the temp window is closer to the cur window */
+						/* than the current closest win in the given dir */
 						if ((temp_win_attrib.x - cur_win_attrib.x) < closest_dist) {
 							closest_window = temp_window;
 							closest_dist = temp_win_attrib.x - cur_win_attrib.x;
@@ -76,10 +77,10 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 					}
 				}
 				if (dir == WEST) {
-					// If the temp window is more westernly
+					/* If the temp window is more westernly */
 					if (temp_win_attrib.x < cur_win_attrib.x) {
-						// If the temp window is closer to the cur window
-						// than the current closest win in the given dir
+						/* If the temp window is closer to the cur window */
+						/* than the current closest win in the given dir */
 						if ((cur_win_attrib.x - temp_win_attrib.x) < closest_dist) {
 							closest_window = temp_window;
 							closest_dist = cur_win_attrib.x - temp_win_attrib.x;
@@ -87,10 +88,10 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 					}
 				}
 				if (dir == SOUTH) {
-					// If the temp window is more southernly
+					/* If the temp window is more southernly */
 					if (temp_win_attrib.y > cur_win_attrib.y) {
-						// If the temp window is closer to the cur window
-						// than the current closest win in the given dir
+						/* If the temp window is closer to the cur window */
+						/* than the current closest win in the given dir */
 						if ((temp_win_attrib.y - cur_win_attrib.y) < closest_dist) {
 							closest_window = temp_window;
 							closest_dist = temp_win_attrib.y - cur_win_attrib.y;
@@ -98,10 +99,10 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 					}
 				}
 				if (dir == NORTH) {
-					// If the temp window is more northernly
+					/* If the temp window is more northernly */
 					if (temp_win_attrib.y < cur_win_attrib.y) {
-						// If the temp window is closer to the cur window
-						// than the current closest win in the given dir
+						/* If the temp window is closer to the cur window */
+						/* than the current closest win in the given dir */
 						if ((cur_win_attrib.y - temp_win_attrib.y) < closest_dist) {
 							closest_window = temp_window;
 							closest_dist = cur_win_attrib.y - temp_win_attrib.y;

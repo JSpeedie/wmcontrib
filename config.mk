@@ -1,4 +1,4 @@
-# wtfc version
+# wmcontrib version
 VERSION = 0.1
 
 # Customize below to fit your system
@@ -17,13 +17,14 @@ LIBS = -L/usr/lib -lc -lcrypt -L${X11LIB} -lX11 -lXext -lXrandr
 # flags
 CPPFLAGS = -DVERSION=\"${VERSION}\" -DHAVE_SHADOW_H
 CFLAGS = -std=c99 -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
-LDFLAGS = -s ${LIBS}
+# LDFLAGS = -s ${LIBS}
+LDFLAGS = -ggdb ${LIBS}
 
 # On *BSD remove -DHAVE_SHADOW_H from CPPFLAGS and add -DHAVE_BSD_AUTH
 # On OpenBSD and Darwin remove -lcrypt from LIBS
 
 # compiler and linker
-CC = cc
+CC = gcc -ggdb
 
 # Install mode. On BSD systems MODE=2755 and GROUP=auth
 # On others MODE=4755 and GROUP=root
