@@ -29,12 +29,7 @@ static const int BOTTOM_RIGHT = 8;
 
 
 void print_help(void) {
-	printf("wmvc\n\tusage: " \
-		"[ -a ]");
-
-	printf("\n\n\t-a, --thiswillbeanoptionflag variable");
-
-	printf("\n");
+	printf("usage: \n\twmvc <corner> <wid>");
 	exit(0);
 }
 
