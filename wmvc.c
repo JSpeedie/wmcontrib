@@ -41,18 +41,50 @@ void print_help(void) {
 int get_coord_for_corner(Window win, int corner, int *return_x,
 	int *return_y) {
 
+	XWindowAttributes win_attrib;
 	Display *dpy;
-	XRRScreenResources *screen;
-	XRRCrtcInfo *crtc_info;
-
 	dpy = XOpenDisplay(":0");
-	screen = XRRGetScreenResources (dpy, DefaultRootWindow(dpy));
+	XGetWindowAttributes(dpy, win, &win_attrib);
+	XRRScreenResources *screen;
+	XRRCrtcInfo *screen_info;
+
+	screen = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
 	/* 0 to get the first monitor */
-	crtc_info = XRRGetCrtcInfo (dpy, screen, screen->crtcs[0]);
-	int test = crtc_info->noutput;
+	screen_info = XRRGetCrtcInfo(dpy, screen, screen->crtcs[0]);
 
-	return 1;
+	if (corner == TOP_LEFT) {
+		*return_x = screen_info->x;
+		*return_y = screen_info->y;
+	} else if (corner == TOP_CENTER) {
+		*return_x = (screen_info->width)/2 - (win_attrib.width)/2 + screen_info->x;
+		*return_y = screen_info->y;
+	} else if (corner == TOP_RIGHT) {
+		*return_x = (screen_info->width) - (win_attrib.width) + screen_info->x;
+		*return_y = screen_info->y;
+	} else if (corner == MIDDLE_LEFT) {
+		*return_x = screen_info->x;
+		*return_y = (screen_info->height)/2 - (win_attrib.height)/2 + screen_info->y;
+	} else if (corner == MIDDLE_CENTER) {
+		*return_x = (screen_info->width)/2 - (win_attrib.width)/2 + screen_info->x;
+		*return_y = (screen_info->height)/2 - (win_attrib.height)/2 + screen_info->y;
+	} else if (corner == MIDDLE_RIGHT) {
+		*return_x = (screen_info->width) - (win_attrib.width) + screen_info->x;
+		*return_y = (screen_info->height)/2 - (win_attrib.height)/2 + screen_info->y;
+	} else if (corner == BOTTOM_LEFT) {
+		*return_x = screen_info->x;
+		*return_y = (screen_info->height) - (win_attrib.height) + screen_info->y;
+	} else if (corner == BOTTOM_CENTER) {
+		*return_x = (screen_info->width)/2 - (win_attrib.width)/2 + screen_info->x;
+		*return_y = (screen_info->height) - (win_attrib.height) + screen_info->y;
+	} else if (corner == BOTTOM_RIGHT) {
+		*return_x = (screen_info->width) - (win_attrib.width) + screen_info->x;
+		*return_y = (screen_info->height) - (win_attrib.height) + screen_info->y;
+	// No valid corner number was given, return 1
+	} else {
+		return 1;
+	}
 
+	return 0;
 
 }
 
@@ -69,34 +101,29 @@ int main(int argc, char **argv) {
 	 * In regex form, wmvc [1-9] 0x[0-F]\{8\} */
 	if (argc == 3) {
 
-		corner = 1;
-
-		/*if (!strcmp(argv[1], '1')) {
+		if (!strcmp(argv[1], "1")) {
 			corner = TOP_LEFT;
-		}*/
-			/*case '1':
-				corner = TOP_LEFT; break;
-			case '2':
-				corner = TOP_CENTER; break;
-			case '3':
-				corner = TOP_RIGHT; break;
-			case '4':
-				corner = MIDDLE_LEFT; break;
-			case '5':
-				corner = MIDDLE_CENTER; break;
-			case '6':
-				corner = MIDDLE_RIGHT; break;
-			case '7':
-				corner = BOTTOM_LEFT; break;
-			case '8':
-				corner = BOTTOM_CENTER; break;
-			case '9':
-				corner = BOTTOM_RIGHT; break;
-			case '9':
+		} else if (!strcmp(argv[1], "2")) {
+			corner = TOP_CENTER;
+		} else if (!strcmp(argv[1], "3")) {
+			corner = TOP_RIGHT;
+		} else if (!strcmp(argv[1], "4")) {
+			corner = MIDDLE_LEFT;
+		} else if (!strcmp(argv[1], "5")) {
+			corner = MIDDLE_CENTER;
+		} else if (!strcmp(argv[1], "6")) {
+			corner = MIDDLE_RIGHT;
+		} else if (!strcmp(argv[1], "7")) {
+			corner = BOTTOM_LEFT;
+		} else if (!strcmp(argv[1], "8")) {
+			corner = BOTTOM_CENTER;
+		} else if (!strcmp(argv[1], "9")) {
+			corner = BOTTOM_RIGHT;
+		} else {
 				XSetInputFocus(dpy, None, RevertToNone, CurrentTime);
 				XSync(dpy, False);
 				exit(0);
-				break;*/
+		}
 
 		/* If a valid corner was not specified, then print usage help */
 		if (corner == -1) {
@@ -104,17 +131,20 @@ int main(int argc, char **argv) {
 			print_help();
 			return 1;
 		} else {
-			const char *thirdarg = &argv[2][2];
-			unsigned long int win_id = strtoul(argv[2][2], NULL, 16);
+			Display *dpy = XOpenDisplay(":0");
+			unsigned long int win_id = strtoul(&argv[2][0], NULL, 0);
+
+			int ret_x = 0;
+			int ret_y = 0;
+
+			get_coord_for_corner(win_id, corner, &ret_x, &ret_y);
+
 			XWindowAttributes win_attrib;
 			XGetWindowAttributes(dpy, win_id, &win_attrib);
 
-			int *ret_x;
-			int *ret_y;
-			// get_coord_for_corner(argv[2], corner, &ret_x, &ret_y);
-
-			printf("valid corner given");
-			return 1;
+			printf("%d %d %d %d 0x%08x\n", ret_x, ret_y, win_attrib.width, \
+				win_attrib.height, win_id);
+			return 0;
 		}
 	}
 	/* If the program wasn't called with 2 arguments */
