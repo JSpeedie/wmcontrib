@@ -157,8 +157,6 @@ int main(int argc, char **argv) {
 
 		Display *dpy = XOpenDisplay(":0");
 		unsigned long int win_id = strtoul(&argv[2][0], NULL, 0);
-		unsigned long int test = strtoul("hey dude", NULL, 0);
-		printf("test: %x\n", test);
 
 		int ret_x = 0;
 		int ret_y = 0;
