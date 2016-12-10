@@ -38,19 +38,48 @@ void print_help(void) {
 	exit(0);
 }
 
+int window_exists(Window win) {
+
+	Display *dpy;
+	dpy = XOpenDisplay(":0");
+	int screen = DefaultScreen(dpy);
+	Window root_win = RootWindow(dpy, screen);
+	Window root_ret, parent_ret, *child_ret;
+	unsigned int number_children;
+	XQueryTree(dpy, root_win, &root_ret, &parent_ret, &child_ret, \
+		&number_children);
+
+	for (int i = 0; i < number_children; i++) {
+		Window temp = *(child_ret + i);
+		/* 'win' exists, return 0 */
+		if (temp == win) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
 int get_coord_for_corner(Window win, int corner, int *return_x,
 	int *return_y) {
 
 	XWindowAttributes win_attrib;
 	Display *dpy;
 	dpy = XOpenDisplay(":0");
+
+	/* If the given window could not be found, return 1 */
+	if (window_exists(win)) {
+		printf("Could not find window of given id.\n");
+		return 1;
+	}
+
 	XGetWindowAttributes(dpy, win, &win_attrib);
-	XRRScreenResources *screen;
+	XRRScreenResources *screen_res;
 	XRRCrtcInfo *screen_info;
 
-	screen = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
+	screen_res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
 	/* 0 to get the first monitor */
-	screen_info = XRRGetCrtcInfo(dpy, screen, screen->crtcs[0]);
+	screen_info = XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[0]);
 
 	if (corner == TOP_LEFT) {
 		*return_x = screen_info->x;
@@ -81,6 +110,7 @@ int get_coord_for_corner(Window win, int corner, int *return_x,
 		*return_y = (screen_info->height) - (win_attrib.height) + screen_info->y;
 	// No valid corner number was given, return 1
 	} else {
+		printf("No valid corner number given. Must match [1-9].\n");
 		return 1;
 	}
 
@@ -120,36 +150,36 @@ int main(int argc, char **argv) {
 		} else if (!strcmp(argv[1], "9")) {
 			corner = BOTTOM_RIGHT;
 		} else {
-				XSetInputFocus(dpy, None, RevertToNone, CurrentTime);
-				XSync(dpy, False);
-				exit(0);
-		}
-
-		/* If a valid corner was not specified, then print usage help */
-		if (corner == -1) {
-			printf("no valid corner number given. Must match [1-9]\n");
+			printf("No valid corner number given. Must match [1-9].\n");
 			print_help();
 			return 1;
-		} else {
-			Display *dpy = XOpenDisplay(":0");
-			unsigned long int win_id = strtoul(&argv[2][0], NULL, 0);
-
-			int ret_x = 0;
-			int ret_y = 0;
-
-			get_coord_for_corner(win_id, corner, &ret_x, &ret_y);
-
-			XWindowAttributes win_attrib;
-			XGetWindowAttributes(dpy, win_id, &win_attrib);
-
-			printf("%d %d %d %d 0x%08x\n", ret_x, ret_y, win_attrib.width, \
-				win_attrib.height, win_id);
-			return 0;
 		}
+
+		Display *dpy = XOpenDisplay(":0");
+		unsigned long int win_id = strtoul(&argv[2][0], NULL, 0);
+		unsigned long int test = strtoul("hey dude", NULL, 0);
+		printf("test: %x\n", test);
+
+		int ret_x = 0;
+		int ret_y = 0;
+
+		int stat = get_coord_for_corner(win_id, corner, &ret_x, &ret_y);
+
+		if (stat != 0) {
+			return 1;
+		}
+
+		XWindowAttributes win_attrib;
+		XGetWindowAttributes(dpy, win_id, &win_attrib);
+
+		printf("%d %d %d %d 0x%08x\n", ret_x, ret_y, win_attrib.width, \
+			win_attrib.height, win_id);
+		return 0;
+
 	}
 	/* If the program wasn't called with 2 arguments */
 	else {
-		printf("Incorrect number of arguments provided.\n\n");
+		printf("Incorrect number of arguments provided.\n");
 		print_help();
 		return 1;
 	}
