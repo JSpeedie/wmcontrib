@@ -29,7 +29,7 @@ static const int BOTTOM_RIGHT = 8;
 
 
 void print_help(void) {
-	printf("usage: \n\twmvc <corner> <wid>");
+	printf("usage: wmvc <corner> <wid>\n");
 	exit(0);
 }
 
