@@ -23,12 +23,7 @@ int WEST = 3;
 int AMBIGUOUS = 3;
 
 void print_help(void) {
-	printf("wtfc\n\tusage: " \
-		"[ -a ]");
-
-	printf("\n\n\t-a, --thiswillbeanoptionflag variable\n\t\tMight be a thing.");
-
-	printf("\n");
+	printf("usage: wtfc [undslwrefN]\n");
 	exit(0);
 }
 
@@ -168,7 +163,7 @@ main(int argc, char **argv) {
 
 		/* If a direction was not specified, then print usage help */
 		if (cardinal == -1) {
-			printf("no valid direction given\n");
+			printf("No valid direction given\n");
 			print_help();
 			return 1;
 		}
