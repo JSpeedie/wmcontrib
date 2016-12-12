@@ -7,8 +7,8 @@ A collection of C programs created to make use of X with no window managers
 ## Programs/Contents
 
 wmcontrib consists (currently) of 2 programs: wtfc and wmvc. They stand for
-**w**indow **t**ransfer **f**ocus **c**ardinal and **w**indow **m**o**v**e
-**c**orner.
+**W**indow **T**ransfer **F**ocus **C**ardinal and **W**indow **M**o**V**e
+**C**orner.
 
 
 ### wtfc
@@ -20,24 +20,24 @@ window. wtfc has designed to be a little more useful than that. You can pass
 arguments to wtfc to focus or to not focus the window it finds to the left or
 right, etc. This could be useful if you wanted to hack together a bash script
 to swap a window with the window on its' left, right or etc. Obviously this
-has more potential, I will leave that to the user. Note that in some window
-managers, wtfc will not be able to focus the windows it finds due to the way
-they control window focusing.
+has more potential, but I will leave that to the user. **Note** that in some
+window managers, wtfc will not be able to focus the windows it finds due to
+the way they control window focusing.
 
 
 ### wmvc
 
-wmvc came around because I often would create a urxvt instance, set it to
+wmvc came about because I often would create a urxvt instance, set it to
 floating and then I'd drag it to a corner with my mouse. For instance, having
 a separate urxvt for svn, git or just for compiling the project. wmvc was
 designed to replace using the mouse and dragging the window. Instead you can
 use wmvc (in conjunction with wmutils wtp) to move a given window to a given
-"corner". wmvc can send a window to any of the 4 corners as well as 5 other
-locations which may be useful. These locations are shown (from 1 to 9
-respectively), the top left corner, top of the screen and centered, the top
-right corner, middle of the screen on the left side, centered on the screen,
-middle of the screen on the right side, bottom left corner, bottom of the
-screen and centered and the bottom right corner.
+"corner". wmvc can send a window to any of the 4 corners of the screen as well
+as 5 other locations which may be useful. These locations are (from 1
+to 9 respectively), the top left corner, top of the screen and centered, the
+top right corner, middle of the screen on the left side, centered on the
+screen, middle of the screen on the right side, bottom left corner, bottom
+of the screen and centered and the bottom right corner.
 
 
 ## To be added
