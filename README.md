@@ -32,12 +32,11 @@ floating and then I'd drag it to a corner with my mouse. For instance, having
 a separate urxvt for svn, git or just for compiling the project. wmvc was
 designed to replace using the mouse and dragging the window. Instead you can
 use wmvc (in conjunction with wmutils wtp) to move a given window to a given
-"corner". wmvc can send a window to any of the 4 corners of the screen as well
-as 5 other locations which may be useful. These locations are (from 1
-to 9 respectively), the top left corner, top of the screen and centered, the
-top right corner, middle of the screen on the left side, centered on the
-screen, middle of the screen on the right side, bottom left corner, bottom
-of the screen and centered and the bottom right corner.
+"corner". With wtp, wmvc can send a window to any of the 4 corners of
+the screen as well as 5 other locations which may be useful. These locations
+are (from 1 to 9 respectively), are shown in the gif below.
+
+![wmvc](https://github.com/JSpeedie/wmcontrib/blob/master/wmvc.gif?raw=true)
 
 
 ## To be added
