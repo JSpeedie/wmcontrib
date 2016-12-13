@@ -55,12 +55,50 @@ int window_exists(Window win) {
 	return 1;
 }
 
+int get_screen_number_of_win(Window win, Display *dpy, int *return_screen_num) {
+
+	XRRScreenResources *screen_res =
+		XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
+	XWindowAttributes win_attr;
+	XGetWindowAttributes(dpy, win, &win_attr);
+
+	int nmonitors = 0;
+	XRRMonitorInfo *mon_inf = XRRGetMonitors(dpy, win, 1, &nmonitors);
+
+	for (int i = 0; i < nmonitors; i++) {
+		XRRCrtcInfo *screen_info =
+			XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[i]);
+		/* If the window is on the ith screen in the x */
+		if (win_attr.x >= screen_info->x &&
+			win_attr.x < (screen_info->x + screen_info->width)) {
+			/* If the window is on the ith screen in the y */
+			if (win_attr.y >= screen_info->y &&
+				win_attr.y < (screen_info->y + screen_info->height)) {
+				*return_screen_num = i;
+				return 0;
+			}
+
+		}
+	}
+
+	/* If the function has not returned yet, then it could not find a screen
+	 * on which 'win' resides.
+	 */
+	return 1;
+}
+
 int get_coord_for_corner(Window win, int corner, int *return_x,
 	int *return_y) {
 
 	XWindowAttributes win_attrib;
-	Display *dpy;
-	dpy = XOpenDisplay(":0");
+	Display *dpy = XOpenDisplay(0);
+	int win_belong_to;
+
+	/* If it could not find the screen 'win' is on, return 1 */
+	if (get_screen_number_of_win(win, dpy, &win_belong_to)) {
+		printf("Could not find the screen the given window resides in.\n");
+		return 1;
+	}
 
 	/* If the given window could not be found, return 1 */
 	if (window_exists(win)) {
@@ -74,7 +112,7 @@ int get_coord_for_corner(Window win, int corner, int *return_x,
 
 	screen_res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
 	/* 0 to get the first monitor */
-	screen_info = XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[0]);
+	screen_info = XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[win_belong_to]);
 
 	if (corner == TOP_LEFT) {
 		*return_x = screen_info->x;
