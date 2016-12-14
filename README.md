@@ -27,19 +27,34 @@ the way they control window focusing.
 
 ### wmvc
 
+**Note:** This program is currently being considered for a name change. wmvc
+is no longer a good name as unlike `wmv` from wmutils, this program does not
+"shift" or move the window relative to itself. It's more similar to `wtp`
+which "teleports" (just sets the location non-relatively) to given parameters.
+Furthermore, this program no longer sends the window to set corners (which is
+a bad name to begin with because 5/9 of the locations it could send the window
+to were not actually corners), but rather anywhere on the screen.
+
 wmvc came about because I often would create a urxvt instance, set it to
 floating and then I'd drag it to a corner with my mouse. For instance, having
 a separate urxvt for svn, git or just for compiling the project. wmvc was
 designed to replace using the mouse and dragging the window. Instead you can
-use wmvc (in conjunction with wmutils wtp) to move a given window to a given
-"corner". With wtp, wmvc can send a window to any of the 4 corners of
-the screen as well as 5 other locations which may be useful. These locations
-are (from 1 to 9 respectively), are shown in the gif below.
+use wmvc to move a given window to a given location, relative to the screen it
+is on. For instance, running (and making use of `wmutils`' `pfw`)
+`wmvc -x 1 -y 1 -w $(pfw)` will send the currently focused window to the
+bottom right corner of the screen it is currently on. `-x` and `-y` take
+`double`s. This means you could do `wmvc -x 0.7593 -y 1 -w $(pfw)` to send
+the currently focused window to the bottom of the screen, 75.93% of the way
+to being all the way in the bottom right corner. Some of the more useful
+locations (combinations of `-x` = 0, 0.5, 1 and `-y` = 0, 0.5, 1) are shown
+below.
 
 ![wmvc](https://github.com/JSpeedie/wmcontrib/blob/master/wmvc.gif?raw=true)
 
 
 ## To be added
 
-I plan on making some webms to show what these programs look like in action,
-but that will have to wait for now.
+I plan on making some gifs/webms to show what these programs look like in
+action (there's one for wmvc, but that will be replaced to show how it's
+functionality has been changed to allow for more possibilities), but that
+will have to wait for now.
