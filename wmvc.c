@@ -16,6 +16,12 @@
 Display *dpy;
 int focus = 0;
 int compatible = 0;
+int use_x = 0;
+int use_y = 0;
+int use_anchors = 0;
+int offset_borders = 0;
+int print_results = 1;
+int move_after = 0;
 
 void print_help(void) {
 	printf("usage: wmvc <corner> <wid>\n");
@@ -43,7 +49,8 @@ int window_exists(Window win) {
 	return 1;
 }
 
-int get_screen_number_of_win(Window win, Display *dpy, int *return_screen_num) {
+int get_screen_number_of_win(Window win, Display *dpy,
+	int *return_screen_num) {
 
 	XRRScreenResources *screen_res =
 		XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
@@ -101,10 +108,26 @@ int get_coord_for_corner(Window win, double rel_x, double rel_y, int *return_x,
 	/* 0 to get the first monitor */
 	screen_info = XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[win_belong_to]);
 
-	*return_x = (rel_x)*(screen_info->width)
-		- (rel_x)*(win_attrib.width) + screen_info->x;
-	*return_y = (rel_y)*(screen_info->height)
-		- (rel_y)*(win_attrib.height) + screen_info->y;
+	/* option flag for changing output to compensate for border sizes */
+	if (offset_borders == 1) {
+		*return_x = (rel_x)*(screen_info->width)
+			- (rel_x)*2*(win_attrib.border_width)
+			- (rel_x)*(win_attrib.width)
+			+ screen_info->x;
+		*return_y = (rel_y)*(screen_info->height)
+			- (rel_y)*2*(win_attrib.border_width)
+			- (rel_y)*(win_attrib.height)
+			+ screen_info->y;
+	/* If not set to 1, then (if the window has borders), it can result
+	 * in 1 border width of the window off the screen + the outer border. */
+	} else {
+		*return_x = (rel_x)*(screen_info->width)
+			- (rel_x)*(win_attrib.width)
+			+ screen_info->x;
+		*return_y = (rel_y)*(screen_info->height)
+			- (rel_y)*(win_attrib.height)
+			+ screen_info->y;
+	}
 
 	return 0;
 
@@ -117,18 +140,12 @@ int get_coord_for_corner(Window win, double rel_x, double rel_y, int *return_x,
 */
 int main(int argc, char **argv) {
 
-	int use_x = 0;
-	int use_y = 0;
 	double relative_x = 0;
 	double relative_y = 0;
-	unsigned long int win_id;
-	int use_anchors = 0;
-	int offset_borders = 0;
-	int print_results = 1;
-	int move_after = 0;
+	unsigned long int win_id = 0;
 	int ret_x = 0;
 	int ret_y = 0;
-	
+
 	int opt;
 	struct option opt_table[] = {
 		/* relative to screen arguments */
@@ -169,8 +186,6 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	printf("past opt\n");
-
 	Display *dpy = XOpenDisplay(0);
 	XWindowAttributes win_attrib;
 	XGetWindowAttributes(dpy, win_id, &win_attrib);
@@ -192,15 +207,14 @@ int main(int argc, char **argv) {
 			exit(1);
 		}
 
-		/* option falgs that take effect near the end of the process */
+		/* option flags that take effect near the end of the process */
 		if (print_results == 1) {
 			printf("%d %d %d %d 0x%08x\n", ret_x, ret_y, win_attrib.width, \
 				win_attrib.height, win_id);
 		}
 		if (move_after == 1) {
-			// XMoveResizeWindow(dpy, win_id, ret_x, ret_y, win_attrib.width, \
-			// 	win_attrib.height);
-			XMoveResizeWindow(dpy, 0x02400009, 10, 10, 500, 500);
+			XMoveWindow(dpy, win_id, ret_x, ret_y);
+			XSync(dpy, False);
 		}
 
 		return 0;
