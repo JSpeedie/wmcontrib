@@ -199,6 +199,10 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	/*if (use_x == 0 && use_y == 0) {
+		printf("Neither an x nor y ratio were given.\n");
+		exit(1);
+	}*/
 	if (window_exists(win_id)) {
 		printf("Could not find window of given id.\n");
 		exit(1);
