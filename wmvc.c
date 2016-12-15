@@ -199,6 +199,11 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	if (window_exists(win_id)) {
+		printf("Could not find window of given id.\n");
+		exit(1);
+	}
+
 	Display *dpy = XOpenDisplay(0);
 	XWindowAttributes win_attrib;
 	XGetWindowAttributes(dpy, win_id, &win_attrib);
