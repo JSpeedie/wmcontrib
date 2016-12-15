@@ -57,22 +57,35 @@ int get_screen_number_of_win(Window win, Display *dpy,
 	XWindowAttributes win_attr;
 	XGetWindowAttributes(dpy, win, &win_attr);
 
+	int det_x = 0;
+	int det_y = 0;
 	int nmonitors = 0;
 	XRRGetMonitors(dpy, win, 1, &nmonitors);
 
 	for (int i = 0; i < nmonitors; i++) {
 		XRRCrtcInfo *screen_info =
 			XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[i]);
+
+		/* option flag for using the "anchor" (top left corner)  of a window
+		 * to determine what screen it belongs to */
+		if (use_anchors == 1) {
+			det_x = win_attr.x;
+			det_y = win_attr.y;
+		/* Use the center of the window to determine what screen it's on */
+		} else {
+			det_x = win_attr.x + ((win_attr.width)/2);
+			det_y = win_attr.y + ((win_attr.height)/2);
+		}
+
 		/* If the window is on the ith screen in the x */
-		if (win_attr.x >= screen_info->x &&
-			win_attr.x < (screen_info->x + screen_info->width)) {
+		if (det_x >= screen_info->x &&
+			det_x < (screen_info->x + screen_info->width)) {
 			/* If the window is on the ith screen in the y */
-			if (win_attr.y >= screen_info->y &&
-				win_attr.y < (screen_info->y + screen_info->height)) {
+			if (det_y >= screen_info->y &&
+				det_y < (screen_info->y + screen_info->height)) {
 				*return_screen_num = i;
 				return 0;
 			}
-
 		}
 	}
 
