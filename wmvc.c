@@ -30,14 +30,15 @@ void print_help(void) {
 /** Returns an int of value 0 or 1 representing whether the function
  * succeeded or failed.
  * win the Window to be searched for.
- * If the function failed (to find 'win'), then the it will return 1.
+ * If the function failed to open an X display or could not find a Window 'win',
+ * then it will return 1.
  * If 'win' was found, then the function will return 0.
  */
 int window_exists(Window win) {
 
 	if (!(dpy = XOpenDisplay(0))) {
 		printf("Couldn't open X display\n");
-		exit(1);
+		return 1;
 	}
 
 	int screen = DefaultScreen(dpy);
@@ -122,16 +123,20 @@ int get_screen_number_of_win(Window win, Display *dpy,
  *     after it has been moved to the given x ratio of the screen.
  * *return_y pointer to an int to be filled with  the new y value of 'win'
  *     after it has been moved to the given y ratio of the screen.
- * Returns 0 if it could find the screen 'win' belonged to and  if 'win' exists.
+ * Returns 0 if it could find the screen 'win' belongs, if 'win' exists, and
+ * if an X display could be opened.
  * Returns 1 otherwise.
  */
 int get_coord_for_relative_location(Window win, double rel_x, double rel_y, int *return_x,
 	int *return_y) {
 
 	XWindowAttributes win_attrib;
-	Display *dpy = XOpenDisplay(0);
 	int win_belong_to;
 
+	if (!(dpy = XOpenDisplay(0))) {
+		printf("Couldn't open X display\n");
+		return 1;
+	}
 	/* If it could not find the screen 'win' is on, return 1 */
 	if (get_screen_number_of_win(win, dpy, &win_belong_to)) {
 		printf("Could not find the screen the given window resides in.\n");
@@ -173,7 +178,6 @@ int get_coord_for_relative_location(Window win, double rel_x, double rel_y, int 
 	}
 
 	return 0;
-
 }
 
 /*
