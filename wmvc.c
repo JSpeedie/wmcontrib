@@ -27,10 +27,19 @@ void print_help(void) {
 	printf("usage: wmvc <corner> <wid>\n");
 }
 
+/** Returns an int of value 0 or 1 representing whether the function
+ * succeeded or failed.
+ * win the Window to be searched for.
+ * If the function failed (to find 'win'), then the it will return 1.
+ * If 'win' was found, then the function will return 0.
+ */
 int window_exists(Window win) {
 
-	Display *dpy;
-	dpy = XOpenDisplay(0);
+	if (!(dpy = XOpenDisplay(0))) {
+		printf("Couldn't open X display\n");
+		exit(1);
+	}
+
 	int screen = DefaultScreen(dpy);
 	Window root_win = RootWindow(dpy, screen);
 	Window root_ret, parent_ret, *child_ret;
@@ -49,6 +58,15 @@ int window_exists(Window win) {
 	return 1;
 }
 
+/** Returns an int representing whether the function succeeded or failed to
+ * find the screen a given Window 'win' belongs to.
+ * win the Window we are trying to find the screen of.
+ * *dpy pointer to the Display we will be searching on.
+ * *return_screen_num pointer to an int where the function will fill in the
+ *     screen number that 'win' belongs to, if it can be found.
+ * This function will return 0 if it was able to find the screen 'win' belongs
+ * to. If it cannot, then it will return 1.
+ */
 int get_screen_number_of_win(Window win, Display *dpy,
 	int *return_screen_num) {
 
@@ -95,7 +113,19 @@ int get_screen_number_of_win(Window win, Display *dpy,
 	return 1;
 }
 
-int get_coord_for_corner(Window win, double rel_x, double rel_y, int *return_x,
+/** Returns an int of either 0 or 1 representing whether the function
+ * succeeded or failed in finding the new location for 'win'.
+ * win the Window to be moved.
+ * rel_x the ratio of the screen's width to return as '*return_x'.
+ * rel_y the ratio of the screen's height to return as '*return_y'.
+ * *return_x pointer to an int to be filled with  the new x value of 'win'
+ *     after it has been moved to the given x ratio of the screen.
+ * *return_y pointer to an int to be filled with  the new y value of 'win'
+ *     after it has been moved to the given y ratio of the screen.
+ * Returns 0 if it could find the screen 'win' belonged to and  if 'win' exists.
+ * Returns 1 otherwise.
+ */
+int get_coord_for_relative_location(Window win, double rel_x, double rel_y, int *return_x,
 	int *return_y) {
 
 	XWindowAttributes win_attrib;
@@ -199,10 +229,10 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	/*if (use_x == 0 && use_y == 0) {
+	if (use_x == 0 && use_y == 0) {
 		printf("Neither an x nor y ratio were given.\n");
 		exit(1);
-	}*/
+	}
 	if (window_exists(win_id)) {
 		printf("Could not find window of given id.\n");
 		exit(1);
@@ -224,7 +254,7 @@ int main(int argc, char **argv) {
 	/* If the program was given valid parameters for those variables */
 	} else {
 
-		if (get_coord_for_corner(win_id, relative_x, relative_y,
+		if (get_coord_for_relative_location(win_id, relative_x, relative_y,
 			&ret_x, &ret_y)) {
 			exit(1);
 		}
