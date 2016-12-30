@@ -6,9 +6,9 @@ A collection of C programs created to make use of X with no window managers
 
 ## Programs/Contents
 
-wmcontrib consists (currently) of 2 programs: wtfc and wmvc. They stand for
-**W**indow **T**ransfer **F**ocus **C**ardinal and **W**indow **M**o**V**e
-**C**orner.
+wmcontrib consists (currently) of 3 programs: wtfc, wmvc and cfw. They stand for
+**W**indow **T**ransfer **F**ocus **C**ardinal, **W**indow **M**o**V**e
+**C**orner and **C**urrently **F**ocused **W**indow.
 
 
 ### wtfc
@@ -20,9 +20,11 @@ window. wtfc has designed to be a little more useful than that. You can pass
 arguments to wtfc to focus or to not focus the window it finds to the left or
 right, etc. This could be useful if you wanted to hack together a bash script
 to swap a window with the window on its' left, right or etc. Obviously this
-has more potential, but I will leave that to the user. **Note** that in some
+has more potential, but I will leave that to the user.
+
+**Note** that in some
 window managers, wtfc will not be able to focus the windows it finds due to
-the way they control window focusing.
+the way some wms control window focusing.
 
 
 ### wmvc
@@ -30,10 +32,11 @@ the way they control window focusing.
 **Note:** This program is currently being considered for a name change. wmvc
 is no longer a good name as unlike `wmv` from wmutils, this program does not
 "shift" or move the window relative to itself. It's more similar to `wtp`
-which "teleports" (just sets the location non-relatively) to given parameters.
-Furthermore, this program no longer sends the window to set corners (which is
-a bad name to begin with because 5/9 of the locations it could send the window
-to were not actually corners), but rather anywhere on the screen.
+which "teleports" (just sets the location non-relatively to the screen) to
+given parameters. Furthermore, this program no longer sends the window to set
+corners (which is a bad name to begin with because 5/9 of the locations it
+could send the window to were not actually corners), but rather anywhere on
+the screen.
 
 wmvc came about because I often would create a urxvt instance, set it to
 floating and then I'd drag it to a corner with my mouse. For instance, having
@@ -50,6 +53,22 @@ locations (combinations of `-x` = 0, 0.5, 1 and `-y` = 0, 0.5, 1) are shown
 below.
 
 ![wmvc](https://github.com/JSpeedie/wmcontrib/blob/master/wmvc.gif?raw=true)
+
+### cfw
+
+**Note:** This program currently is unfinished and should not be used just yet.
+Until I find a nice way to write this program with Xlib, it won't be quite
+right for a while. Currently I have no handling for running it on an X session
+with no windows, and then spawning a window. In this scenario, it will have no
+output.
+
+`cfw` was designed to be used with `wmutil`'s `chwb` to imitate border
+functionality found in most tiling wms. The main intention being to use `cfw`
+to print out the currently focused window each time that changes, then when it
+changes, using `chwb` to change the newly focused window to have a border of
+whatever qualities. This is to avoid another practice which is to make your
+click-to-focus and key combo for cardinal focusing bindings not just focus,
+but also change border qualities.
 
 
 ## To be added

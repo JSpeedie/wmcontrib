@@ -12,15 +12,16 @@
 #include <X11/Xutil.h>
 
 Display *dpy;
-int focus = 0;
 int compatible = 0;
+int focus = 0;
+int stop = 1;
 
 /* Constants to represent the cardinal directions */
-int NORTH = 0;
-int EAST = 1;
-int SOUTH = 2;
-int WEST = 3;
-int AMBIGUOUS = 3;
+const int NORTH = 0;
+const int EAST = 1;
+const int SOUTH = 2;
+const int WEST = 3;
+const int AMBIGUOUS = 3;
 
 void print_help(void) {
 	printf("usage: wtfc [undslwrefN]\n");
@@ -98,7 +99,7 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 		XQueryTree(dpy, w, &root_return, &parent_return, &children_return, \
 			&number_children);
 		int closest_dist = INT_MAX;
-		int closest_window = -1;
+		unsigned long closest_window = -1;
 		XWindowAttributes cur_win_attrib;
 		XGetWindowAttributes(dpy, current_window, &cur_win_attrib);
 
@@ -110,10 +111,9 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 
 			/* If the window is mapped (visible) */
 			if (temp_win_attrib.map_state == 2 && temp_window != current_window) {
-				int ret = determine_closest_win_in_dir(&temp_win_attrib,
+				if (determine_closest_win_in_dir(&temp_win_attrib,
 					&temp_window, &cur_win_attrib, &closest_window,
-					&closest_dist, dir);
-				if (ret != 0) {
+					&closest_dist, dir) != 0) {
 					return 1;
 				}
 			}
@@ -138,36 +138,29 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 */
 int main(int argc, char **argv) {
 
-	int cardinal = -1;
 	/* If the call to wtfc has 2 WORDS (wtfc and the direction) */
 	if (argc == 2) {
+
+		int cardinal = -1;
 		Window closest_win_ret = -1;
 
 		for (int j = 0; j < strlen(argv[1]); j++) {
 			switch (argv[1][j]) {
-				case 'u':
-					cardinal = NORTH; break;
-				case 'n':
-					cardinal = NORTH; break;
-				case 'r':
-					cardinal = EAST; break;
-				case 'e':
-					cardinal = EAST; break;
-				case 'd':
-					cardinal = SOUTH; break;
-				case 's':
-					cardinal = SOUTH; break;
-				case 'l':
-					cardinal = WEST; break;
-				case 'w':
-					cardinal = WEST; break;
-				case 'f':
-					focus = 1; break;
+				case 'u': cardinal = NORTH; break;
+				case 'n': cardinal = NORTH; break;
+				case 'r': cardinal = EAST; break;
+				case 'e': cardinal = EAST; break;
+				case 'd': cardinal = SOUTH; break;
+				case 's': cardinal = SOUTH; break;
+				case 'l': cardinal = WEST; break;
+				case 'w': cardinal = WEST; break;
+				case 'f': focus = 1; break;
 				case 'N':
 					XSetInputFocus(dpy, None, RevertToNone, CurrentTime);
 					XSync(dpy, False);
 					exit(0);
 					break;
+				case 'c':  stop = 0; break;
 			}
 		}
 
@@ -177,24 +170,31 @@ int main(int argc, char **argv) {
 			print_help();
 			return 1;
 		} else {
-			int found_win = get_closest_win_in_dir(&closest_win_ret, cardinal);
 			/* If there is any window in the given cardinal direction */
-			if (found_win == 0) {
+			if (!get_closest_win_in_dir(&closest_win_ret, cardinal)) {
 				if (focus == 1) {
 					int s = XSetInputFocus(dpy, closest_win_ret,
 						RevertToParent, CurrentTime);
 					XSync(dpy, False);
 				}
-				/* wmutils window id formatting */
-				unsigned long int win_id = (unsigned long int) closest_win_ret;
-				printf("0x%08x\n", win_id);
+				printf("0x%08x\n", closest_win_ret);
 			} else {
-				return 1;
+				/* If the 'c' option flag wasn't used, if a Window wasn't
+				 * found, then wtfc prints out the Window currently focused
+				 */
+				if (stop == 1) {
+					Window current_window;
+					int focus_status;
+					XGetInputFocus(dpy, &current_window, &focus_status);
+					printf("0x%08x\n", current_window);
+				} else {
+					return 1;
+				}
 			}
 		}
 	} else {
 		print_help();
-		return 1;
+		exit(1);
 	}
 
 	return 0;

@@ -31,7 +31,6 @@ void print_help(void) {
 	exit(0);
 }
 
-
 /*
 * argc is the number of WORDS in the call to the cfw
 * argv contains a bunch of info about the call. The shell, the terminal,
@@ -44,29 +43,23 @@ int main(int argc, char **argv) {
 		exit(1);
 	} else {
 		int thing;
+		Window root;
 
+		root = XDefaultRootWindow(dpy);
 		XGetInputFocus(dpy, &win, &thing);
 		XSelectInput(dpy, win, FocusChangeMask);
-		XSync(dpy, False);
-		XFlush(dpy);
 
-		while (1) {
-			/* If there are more than 0 X events yet to be removed from the queue */
-			if (XPending(dpy) > 0) {
-				XNextEvent(dpy, &event);
+		// while (!XPeekEvent(dpy, &event)) {
+		while (!XNextEvent(dpy, &event)) {
+		// while (1) {
+			// XCheckMaskEvent(dpy, FocusChangeMask, &event);
 
-				if (event.type == FocusIn || event.type == FocusOut) {
-					XGetInputFocus(dpy, &win, &thing);
-					printf("%08x\n", win);
-					// XSync(dpy, True);
-				}
-			} else {
-				/* remove 2 zeros for decent speed. Check old sflock */
-				usleep(100000);
+			// if (event.type == FocusIn || event.type == FocusOut) {
+			if (event.type == FocusOut) {
+				XGetInputFocus(dpy, &win, &thing);
+				printf("%08x\n", win);
+				XSelectInput(dpy, win, FocusChangeMask);
 			}
-
-			XSync(dpy, False);
-			XFlush(dpy);
 		}
 	}
 
