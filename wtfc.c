@@ -24,7 +24,7 @@ const int WEST = 3;
 const int AMBIGUOUS = 3;
 
 void print_help(void) {
-	printf("usage: wtfc [undslwrefN]\n");
+	printf("usage: wtfc [undslwrefNc]\n");
 	exit(0);
 }
 
@@ -83,6 +83,7 @@ int determine_closest_win_in_dir(XWindowAttributes *other_attr,
 int get_closest_win_in_dir(Window *closest_return, int dir) {
 
 	if (!(dpy = XOpenDisplay(0))) {
+		printf("Couldn't open X display\n");
 		exit(1);
 	} else {
 		int screen = DefaultScreen(dpy);
@@ -143,6 +144,11 @@ int main(int argc, char **argv) {
 
 		int cardinal = -1;
 		Window closest_win_ret = -1;
+		if (!(dpy = XOpenDisplay(0))) {
+			printf("Couldn't open X display\n");
+			exit(1);
+		}
+		int screen = DefaultScreen(dpy);
 
 		for (int j = 0; j < strlen(argv[1]); j++) {
 			switch (argv[1][j]) {
@@ -155,6 +161,8 @@ int main(int argc, char **argv) {
 				case 'l': cardinal = WEST; break;
 				case 'w': cardinal = WEST; break;
 				case 'f': focus = 1; break;
+				/* "Works" but not necessarily as intended. Being considered
+				 * for removal */
 				case 'N':
 					XSetInputFocus(dpy, None, RevertToNone, CurrentTime);
 					XSync(dpy, False);
