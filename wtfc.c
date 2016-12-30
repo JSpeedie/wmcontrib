@@ -2,6 +2,7 @@
 #define _XOPEN_SOURCE 500
 
 #include <err.h>
+#include <getopt.h>
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
@@ -139,70 +140,84 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 */
 int main(int argc, char **argv) {
 
-	/* If the call to wtfc has 2 WORDS (wtfc and the direction) */
-	if (argc == 2) {
-
-		int cardinal = -1;
-		Window closest_win_ret = -1;
-		if (!(dpy = XOpenDisplay(0))) {
-			printf("Couldn't open X display\n");
-			exit(1);
-		}
-		int screen = DefaultScreen(dpy);
-
-		for (int j = 0; j < strlen(argv[1]); j++) {
-			switch (argv[1][j]) {
-				case 'u': cardinal = NORTH; break;
-				case 'n': cardinal = NORTH; break;
-				case 'r': cardinal = EAST; break;
-				case 'e': cardinal = EAST; break;
-				case 'd': cardinal = SOUTH; break;
-				case 's': cardinal = SOUTH; break;
-				case 'l': cardinal = WEST; break;
-				case 'w': cardinal = WEST; break;
-				case 'f': focus = 1; break;
-				/* "Works" but not necessarily as intended. Being considered
-				 * for removal */
-				case 'N':
-					XSetInputFocus(dpy, None, RevertToNone, CurrentTime);
-					XSync(dpy, False);
-					exit(0);
-					break;
-				case 'c':  stop = 0; break;
-			}
-		}
-
-		/* If a direction was not specified, then print usage help */
-		if (cardinal == -1) {
-			printf("No valid direction given\n");
-			print_help();
-			return 1;
-		} else {
-			/* If there is any window in the given cardinal direction */
-			if (!get_closest_win_in_dir(&closest_win_ret, cardinal)) {
-				if (focus == 1) {
-					int s = XSetInputFocus(dpy, closest_win_ret,
-						RevertToParent, CurrentTime);
-					XSync(dpy, False);
-				}
-				printf("0x%08x\n", closest_win_ret);
-			} else {
-				/* If the 'c' option flag wasn't used, if a Window wasn't
-				 * found, then wtfc prints out the Window currently focused
-				 */
-				if (stop == 1) {
-					Window current_window;
-					int focus_status;
-					XGetInputFocus(dpy, &current_window, &focus_status);
-					printf("0x%08x\n", current_window);
-				} else {
-					return 1;
-				}
-			}
-		}
-	} else {
-		print_help();
+	if (!(dpy = XOpenDisplay(0))) {
+		printf("Couldn't open X display\n");
 		exit(1);
+	}
+	Window closest_win_ret = -1;
+	int cardinal = -1;
+	int screen = DefaultScreen(dpy);
+
+	int opt;
+	struct option opt_table[] = {
+		/* cardinal direction arguments */
+		{ "up",			no_argument,	NULL,	'u' },
+		{ "north",		no_argument,	NULL,	'n' },
+		{ "down",		no_argument,	NULL,	'd' },
+		{ "south",		no_argument,	NULL,	's' },
+		{ "left",		no_argument,	NULL,	'l' },
+		{ "west",		no_argument,	NULL,	'w' },
+		{ "right",		no_argument,	NULL,	'r' },
+		{ "east",		no_argument,	NULL,	'e' },
+		/* fine functionality options */
+		{ "focus",		no_argument,	NULL,	'f' },
+		{ "focus-none",	no_argument,	NULL,	'N' },
+		{ "continue",	no_argument,	NULL,	'c' },
+		{ 0, 0, 0, 0 }
+	};
+
+	while ((opt = getopt_long(argc, argv, \
+		"undslwrefNc", opt_table, NULL)) != -1) {
+		switch (opt) {
+			/* cardinal direction arguments */
+			case 'u': cardinal = NORTH; break;
+			case 'n': cardinal = NORTH; break;
+			case 'r': cardinal = EAST; break;
+			case 'e': cardinal = EAST; break;
+			case 'd': cardinal = SOUTH; break;
+			case 's': cardinal = SOUTH; break;
+			case 'l': cardinal = WEST; break;
+			case 'w': cardinal = WEST; break;
+			/* fine functionality options */
+			case 'f': focus = 1; break;
+			/* "Works" but not necessarily as intended. Being considered
+			 * for removal */
+			case 'N':
+				XSetInputFocus(dpy, None, RevertToNone, CurrentTime);
+				XSync(dpy, False);
+				exit(0);
+				break;
+			case 'c':  stop = 0; break;
+		}
+	}
+
+	/* If a direction was not specified, then print usage help */
+	if (cardinal == -1) {
+		printf("No valid direction given\n");
+		print_help();
+		return 1;
+	} else {
+		/* If there is any window in the given cardinal direction */
+		if (!get_closest_win_in_dir(&closest_win_ret, cardinal)) {
+			if (focus == 1) {
+				int s = XSetInputFocus(dpy, closest_win_ret,
+					RevertToParent, CurrentTime);
+				XSync(dpy, False);
+			}
+			printf("0x%08x\n", closest_win_ret);
+		} else {
+			/* If the 'c' option flag wasn't used, if a Window wasn't
+			 * found, then wtfc prints out the Window currently focused
+			 */
+			if (stop == 1) {
+				Window current_window;
+				int focus_status;
+				XGetInputFocus(dpy, &current_window, &focus_status);
+				printf("0x%08x\n", current_window);
+			} else {
+				return 1;
+			}
+		}
 	}
 
 	return 0;
