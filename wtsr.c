@@ -24,7 +24,7 @@ int print_results = 1;
 int move_after = 0;
 
 void print_help(void) {
-	printf("usage: wmvc <corner> <wid>\n");
+	printf("usage: wtsr <corner> <wid>\n");
 }
 
 /** Returns an int of value 0 or 1 representing whether the function
@@ -181,7 +181,7 @@ int get_coord_for_relative_location(Window win, double rel_x, double rel_y, int 
 }
 
 /*
-* argc is the number of WORDS in the call to the wmvc
+* argc is the number of WORDS in the call to the wtsr
 * argv contains a bunch of info about the call. The shell, the terminal,
 * all that jazz. This is what we want.
 */
