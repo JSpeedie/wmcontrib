@@ -18,28 +18,34 @@ int focus = 0;
 int compatible = 0;
 int use_x = 0;
 int use_y = 0;
+int window_given = 0;
 int use_anchors = 0;
 int offset_borders = 0;
 int print_results = 1;
 int move_after = 0;
 
+/* Error codes */
+const int ERR_COULDNT_OPEN_X_DISPLAY = 1;
+const int ERR_WIN_NOT_FOUND = 2;
+const int ERR_SCREEN_OF_WIN_NOT_FOUND = 3;
+const int ERR_NEITHER_RATIO_GIVEN = 4;
+const int ERR_WINDOW_NOT_GIVEN = 5;
+const int ERR_RATIO_NOT_IN_RANGE = 6;
+
 void print_help(void) {
-	printf("usage: wtsr <corner> <wid>\n");
+	fprintf(stderr, "usage: wtsr <corner> <wid>\n");
 }
 
-/** Returns an int of value 0 or 1 representing whether the function
- * succeeded or failed.
+/** Returns an int of 0 if the Window 'win' exists or an int representing
+ * the error it ran into.
  * win the Window to be searched for.
  * If the function failed to open an X display or could not find a Window 'win',
- * then it will return 1.
+ * then it will return the correct error code for window-not-found.
  * If 'win' was found, then the function will return 0.
  */
 int window_exists(Window win) {
 
-	if (!(dpy = XOpenDisplay(0))) {
-		printf("Couldn't open X display\n");
-		return 1;
-	}
+	if (!(dpy = XOpenDisplay(0))) { return ERR_COULDNT_OPEN_X_DISPLAY; }
 
 	int screen = DefaultScreen(dpy);
 	Window root_win = RootWindow(dpy, screen);
@@ -56,17 +62,18 @@ int window_exists(Window win) {
 		}
 	}
 
-	return 1;
+	return ERR_WIN_NOT_FOUND;
 }
 
-/** Returns an int representing whether the function succeeded or failed to
- * find the screen a given Window 'win' belongs to.
+/** Returns an int of 0 if it succeeds in finding the screen number of a
+ * given Window or an int representing the error it ran into.
  * win the Window we are trying to find the screen of.
  * *dpy pointer to the Display we will be searching on.
  * *return_screen_num pointer to an int where the function will fill in the
  *     screen number that 'win' belongs to, if it can be found.
  * This function will return 0 if it was able to find the screen 'win' belongs
- * to. If it cannot, then it will return 1.
+ * to. If it cannot, then it will return the correct
+ * error code for window-not-found.
  */
 int get_screen_number_of_win(Window win, Display *dpy,
 	int *return_screen_num) {
@@ -111,11 +118,11 @@ int get_screen_number_of_win(Window win, Display *dpy,
 	/* If the function has not returned yet, then it could not find a screen
 	 * on which 'win' resides.
 	 */
-	return 1;
+	return ERR_SCREEN_OF_WIN_NOT_FOUND;
 }
 
-/** Returns an int of either 0 or 1 representing whether the function
- * succeeded or failed in finding the new location for 'win'.
+/** Returns an int of 0 if it succeeds in finding the new location for 'win'
+ * or an int representing the error it ran into.
  * win the Window to be moved.
  * rel_x the ratio of the screen's width to return as '*return_x'.
  * rel_y the ratio of the screen's height to return as '*return_y'.
@@ -125,27 +132,20 @@ int get_screen_number_of_win(Window win, Display *dpy,
  *     after it has been moved to the given y ratio of the screen.
  * Returns 0 if it could find the screen 'win' belongs, if 'win' exists, and
  * if an X display could be opened.
- * Returns 1 otherwise.
+ * Returns the correct error code for the error it encountered.
  */
-int get_coord_for_relative_location(Window win, double rel_x, double rel_y, int *return_x,
-	int *return_y) {
+int get_coord_for_relative_location(Window win, double rel_x, double rel_y,
+	int *return_x, int *return_y) {
 
 	XWindowAttributes win_attrib;
 	int win_belong_to;
+	int ret = 0;
 
-	if (!(dpy = XOpenDisplay(0))) {
-		printf("Couldn't open X display\n");
-		return 1;
-	}
-	/* If it could not find the screen 'win' is on, return 1 */
-	if (get_screen_number_of_win(win, dpy, &win_belong_to)) {
-		printf("Could not find the screen the given window resides in.\n");
-		return 1;
-	}
-	/* If the given window could not be found, return 1 */
-	if (window_exists(win)) {
-		printf("Could not find window of given id.\n");
-		return 1;
+	/* Error checking */
+	if (!(dpy = XOpenDisplay(0))) { return ERR_COULDNT_OPEN_X_DISPLAY; }
+	if ((ret = window_exists(win)) != 0) { return ret; }
+	if ((ret = get_screen_number_of_win(win, dpy, &win_belong_to)) != 0) {
+		return ret;
 	}
 
 	XGetWindowAttributes(dpy, win, &win_attrib);
@@ -154,7 +154,8 @@ int get_coord_for_relative_location(Window win, double rel_x, double rel_y, int 
 
 	screen_res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
 	/* 0 to get the first monitor */
-	screen_info = XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[win_belong_to]);
+	screen_info = \
+		XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[win_belong_to]);
 
 	/* option flag for changing output to compensate for border sizes */
 	if (offset_borders == 1) {
@@ -180,11 +181,6 @@ int get_coord_for_relative_location(Window win, double rel_x, double rel_y, int 
 	return 0;
 }
 
-/*
-* argc is the number of WORDS in the call to the wtsr
-* argv contains a bunch of info about the call. The shell, the terminal,
-* all that jazz. This is what we want.
-*/
 int main(int argc, char **argv) {
 
 	double relative_x = 0;
@@ -223,6 +219,7 @@ int main(int argc, char **argv) {
 				break;
 			/* window id argument */
 			case 'w':
+				window_given = 1;
 				win_id = strtoul(&optarg[0], NULL, 0);
 				break;
 			/* fine functionality options */
@@ -234,12 +231,16 @@ int main(int argc, char **argv) {
 	}
 
 	if (use_x == 0 && use_y == 0) {
-		printf("Neither an x nor y ratio were given.\n");
-		exit(1);
+		fprintf(stderr, "wtsr: Neither an x nor y ratio were given.\n");
+		exit(ERR_NEITHER_RATIO_GIVEN);
 	}
-	if (window_exists(win_id)) {
-		printf("Could not find window of given id.\n");
-		exit(1);
+	if (window_given == 0) {
+		fprintf(stderr, "wtsr: Window ID was not given.\n");
+		exit(ERR_WINDOW_NOT_GIVEN);
+	}
+	if (window_exists(win_id) != 0) {
+		fprintf(stderr, "wtsr: Could not find window of given id.\n");
+		exit(ERR_WIN_NOT_FOUND);
 	}
 
 	Display *dpy = XOpenDisplay(0);
@@ -248,19 +249,27 @@ int main(int argc, char **argv) {
 
 	/* Check if the program was given valid relative x and relative y values */
 	if (relative_x > 1 || relative_x < 0) {
-		printf("Relative x value provided was not within 0 <= value <= 1\n");
+		fprintf(stderr, "wtsr: Relative x value provided was not within 0 <= value <= 1\n");
 		print_help();
-		exit(1);
+		exit(ERR_RATIO_NOT_IN_RANGE);
 	} else if (relative_y > 1 || relative_y < 0) {
-		printf("Relative y value provided was not within 0 <= value <= 1\n");
+		fprintf(stderr, "wtsr: Relative y value provided was not within 0 <= value <= 1\n");
 		print_help();
-		exit(1);
+		exit(ERR_RATIO_NOT_IN_RANGE);
 	/* If the program was given valid parameters for those variables */
 	} else {
+		int ret = 0;
 
-		if (get_coord_for_relative_location(win_id, relative_x, relative_y,
-			&ret_x, &ret_y)) {
-			exit(1);
+		if ((ret = get_coord_for_relative_location(win_id, relative_x, relative_y,
+			&ret_x, &ret_y)) != 0) {
+			if (ret == ERR_COULDNT_OPEN_X_DISPLAY) {
+				fprintf(stderr, "wtsr: Couldn't open X display\n");
+			} else if (ret == ERR_WIN_NOT_FOUND) {
+				fprintf(stderr, "wtsr: Could not find window of given id.\n");
+			} else if (ret == ERR_SCREEN_OF_WIN_NOT_FOUND) {
+				fprintf(stderr, "wtsr: Could not find the screen the given window resides in.\n");
+			}
+			exit(ret);
 		}
 
 		/* option flags that take effect near the end of the process */

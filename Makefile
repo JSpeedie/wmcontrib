@@ -5,8 +5,7 @@ include config.mk
 
 SRC = \
 	wtfc.c \
-	wtsr.c \
-	cfw.c
+	wtsr.c
 OBJ = ${SRC:.c=.o}
 BIN = ${SRC:.c=}
 MAN = $(SRC:.c=.1.gz)
@@ -32,8 +31,6 @@ install: $(BIN)
 	@chmod u+s ${DESTDIR}${PREFIX}/bin/wtfc
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/wtsr
 	@chmod u+s ${DESTDIR}${PREFIX}/bin/wtsr
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/cfw
-	@chmod u+s ${DESTDIR}${PREFIX}/bin/cfw
 	@mkdir -p $(MANPREFIX)/man1/
 	@cp -f $(MAN) $(MANPREFIX)/man1/
 
