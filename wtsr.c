@@ -12,6 +12,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/Xrandr.h>
+/* Local includes */
+#include "common.h"
 
 Display *dpy;
 int focus = 0;
@@ -24,101 +26,8 @@ int offset_borders = 0;
 int print_results = 1;
 int move_after = 0;
 
-/* Error codes */
-const int ERR_COULDNT_OPEN_X_DISPLAY = 1;
-const int ERR_WIN_NOT_FOUND = 2;
-const int ERR_SCREEN_OF_WIN_NOT_FOUND = 3;
-const int ERR_NEITHER_RATIO_GIVEN = 4;
-const int ERR_WINDOW_NOT_GIVEN = 5;
-const int ERR_RATIO_NOT_IN_RANGE = 6;
-
 void print_help(void) {
-	fprintf(stderr, "usage: wtsr <corner> <wid>\n");
-}
-
-/** Returns an int of 0 if the Window 'win' exists or an int representing
- * the error it ran into.
- * win the Window to be searched for.
- * If the function failed to open an X display or could not find a Window 'win',
- * then it will return the correct error code for window-not-found.
- * If 'win' was found, then the function will return 0.
- */
-int window_exists(Window win) {
-
-	if (!(dpy = XOpenDisplay(0))) { return ERR_COULDNT_OPEN_X_DISPLAY; }
-
-	int screen = DefaultScreen(dpy);
-	Window root_win = RootWindow(dpy, screen);
-	Window root_ret, parent_ret, *child_ret;
-	unsigned int number_children;
-	XQueryTree(dpy, root_win, &root_ret, &parent_ret, &child_ret, \
-		&number_children);
-
-	for (int i = 0; i < number_children; i++) {
-		Window temp = *(child_ret + i);
-		/* 'win' exists, return 0 */
-		if (temp == win) {
-			return 0;
-		}
-	}
-
-	return ERR_WIN_NOT_FOUND;
-}
-
-/** Returns an int of 0 if it succeeds in finding the screen number of a
- * given Window or an int representing the error it ran into.
- * win the Window we are trying to find the screen of.
- * *dpy pointer to the Display we will be searching on.
- * *return_screen_num pointer to an int where the function will fill in the
- *     screen number that 'win' belongs to, if it can be found.
- * This function will return 0 if it was able to find the screen 'win' belongs
- * to. If it cannot, then it will return the correct
- * error code for window-not-found.
- */
-int get_screen_number_of_win(Window win, Display *dpy,
-	int *return_screen_num) {
-
-	XRRScreenResources *screen_res =
-		XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
-	XWindowAttributes win_attr;
-	XGetWindowAttributes(dpy, win, &win_attr);
-
-	int det_x = 0;
-	int det_y = 0;
-	int nmonitors = 0;
-	XRRGetMonitors(dpy, win, 1, &nmonitors);
-
-	for (int i = 0; i < nmonitors; i++) {
-		XRRCrtcInfo *screen_info =
-			XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[i]);
-
-		/* option flag for using the "anchor" (top left corner)  of a window
-		 * to determine what screen it belongs to */
-		if (use_anchors == 1) {
-			det_x = win_attr.x;
-			det_y = win_attr.y;
-		/* Use the center of the window to determine what screen it's on */
-		} else {
-			det_x = win_attr.x + ((win_attr.width)/2);
-			det_y = win_attr.y + ((win_attr.height)/2);
-		}
-
-		/* If the window is on the ith screen in the x */
-		if (det_x >= screen_info->x &&
-			det_x < (screen_info->x + screen_info->width)) {
-			/* If the window is on the ith screen in the y */
-			if (det_y >= screen_info->y &&
-				det_y < (screen_info->y + screen_info->height)) {
-				*return_screen_num = i;
-				return 0;
-			}
-		}
-	}
-
-	/* If the function has not returned yet, then it could not find a screen
-	 * on which 'win' resides.
-	 */
-	return ERR_SCREEN_OF_WIN_NOT_FOUND;
+	fprintf(stderr, "usage: wtsr -[xy] <ratio> -w <wid> [OPTIONS]\n");
 }
 
 /** Returns an int of 0 if it succeeds in finding the new location for 'win'
@@ -144,7 +53,7 @@ int get_coord_for_relative_location(Window win, double rel_x, double rel_y,
 	/* Error checking */
 	if (!(dpy = XOpenDisplay(0))) { return ERR_COULDNT_OPEN_X_DISPLAY; }
 	if ((ret = window_exists(win)) != 0) { return ret; }
-	if ((ret = get_screen_number_of_win(win, dpy, &win_belong_to)) != 0) {
+	if ((ret = get_screen_number_of_win(win, dpy, use_anchors, &win_belong_to)) != 0) {
 		return ret;
 	}
 

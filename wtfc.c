@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+/* Local includes */
+#include "common.h"
 
 Display *dpy;
 int compatible = 0;
@@ -24,9 +26,10 @@ const int SOUTH = 2;
 const int WEST = 3;
 const int AMBIGUOUS = 3;
 
+const int ERR_NO_VALID_DIR = 1;
+
 void print_help(void) {
-	printf("usage: wtfc [undslwrefNc]\n");
-	exit(0);
+	fprintf(stderr, "usage: wtfc -[undslwre] -[fNc]\n");
 }
 
 int determine_closest_win_in_dir(XWindowAttributes *other_attr,
@@ -193,9 +196,9 @@ int main(int argc, char **argv) {
 
 	/* If a direction was not specified, then print usage help */
 	if (cardinal == -1) {
-		printf("No valid direction given\n");
+		fprintf(stderr, "No valid direction given\n");
 		print_help();
-		return 1;
+		exit(ERR_NO_VALID_DIR);
 	} else {
 		/* If there is any window in the given cardinal direction */
 		if (!get_closest_win_in_dir(&closest_win_ret, cardinal)) {

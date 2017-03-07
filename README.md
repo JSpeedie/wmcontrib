@@ -6,10 +6,9 @@ A collection of C programs created to make use of X with no window managers
 
 ## Programs/Contents
 
-wmcontrib consists (currently) of 3 programs: wtfc, wtsr and cfw. They stand for:  
+wmcontrib consists (currently) of 3 programs: wtfc, and wtsr. They stand for:  
 **WTFC:** **W**indow **T**ransfer **F**ocus **C**ardinal  
-**WTSR:** **W**indow **T**eleport **S**creen **R**elative  
-**CFW:** **C**urrently **F**ocused **W**indow.  
+**WTSR:** **W**indow **T**eleport **S**creen **R**elative
 
 
 ### wtfc
@@ -48,11 +47,6 @@ locations (combinations of `-x` = 0, 0.5, 1 and `-y` = 0, 0.5, 1) are shown
 below.
 
 ![wtsr](https://github.com/JSpeedie/wmcontrib/blob/master/wtsr.gif?raw=true)
-
-### cfw
-
-**Note:** This program has been removed as there seems to be no proper way to do
-this with Xlib.
 
 
 ## To be added
