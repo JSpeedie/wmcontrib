@@ -27,7 +27,7 @@ OBJ = ${SRC:.c=.o}
 BIN = ${SRC:.c=}
 MAN = $(SRC:.c=.1.gz)
 
-all: wtfc wtsr 
+all: wtfc wtsr install
 
 wtsr: wtsr.c $(DEP)
 	$(CC) wtsr.c $(DEP) -o wtsr $(CFLAGS) $(LDFLAGS)

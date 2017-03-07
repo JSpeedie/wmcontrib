@@ -13,12 +13,15 @@
 #include "common.h"
 
 /* Error codes */
-ERR_COULDNT_OPEN_X_DISPLAY = 1;
-ERR_WIN_NOT_FOUND = 2;
-ERR_SCREEN_OF_WIN_NOT_FOUND = 3;
-ERR_NEITHER_RATIO_GIVEN = 4;
-ERR_WINDOW_NOT_GIVEN = 5;
-ERR_RATIO_NOT_IN_RANGE = 6;
+int ERR_COULDNT_OPEN_X_DISPLAY =     1;
+int ERR_WIN_NOT_FOUND =              2;
+int ERR_SCREEN_OF_WIN_NOT_FOUND =    3;
+int ERR_NEITHER_RATIO_GIVEN =        4;
+int ERR_WINDOW_NOT_GIVEN =           5;
+int ERR_RATIO_NOT_IN_RANGE =         6;
+int ERR_NO_VALID_DIR =               7;
+int ERR_INVALID_DIRECTION =          8;
+int ERR_CARDINAL_NOT_GIVEN =         9;
 
 /** Returns an int of 0 if the Window 'win' exists or an int representing
  * the error it ran into.
