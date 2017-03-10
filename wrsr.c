@@ -173,14 +173,14 @@ int main(int argc, char **argv) {
 			exit(ret);
 		}
 
-		/* Only change the width if given a width ratio to resize to */
+		/* Only change the width if given a width ratio to resize it to */
 		if (use_width) {
 			final_w = ret_w;
 		}
 		else {
 			final_w = win_attrib.width;
 		}
-		/* Only change the width if given a width ratio to resize to */
+		/* Only change the height if given a height ratio to resize it to */
 		if (use_height) {
 			final_h = ret_h;
 		}

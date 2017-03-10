@@ -16,8 +16,6 @@
 #include "common.h"
 
 Display *dpy;
-int focus = 0;
-int compatible = 0;
 int use_x = 0;
 int use_y = 0;
 int window_given = 0;
@@ -97,6 +95,8 @@ int main(int argc, char **argv) {
 	unsigned long int win_id = 0;
 	int ret_x = 0;
 	int ret_y = 0;
+	int final_x = 0;
+	int final_y = 0;
 
 	int opt;
 	struct option opt_table[] = {
@@ -181,13 +181,28 @@ int main(int argc, char **argv) {
 			exit(ret);
 		}
 
+		/* Only change the x if given an x ratio to move it to */
+		if (use_x) {
+			final_x = ret_x;
+		}
+		else {
+			final_x = win_attrib.x;
+		}
+		/* Only change the y if given a y ratio to resize it to */
+		if (use_y) {
+			final_y = ret_y;
+		}
+		else {
+			final_y = win_attrib.y;
+		}
+
 		/* option flags that take effect near the end of the process */
 		if (print_results == 1) {
-			printf("%d %d %d %d 0x%08x\n", ret_x, ret_y, win_attrib.width, \
+			printf("%d %d %d %d 0x%08x\n", final_x, final_y, win_attrib.width, \
 				win_attrib.height, win_id);
 		}
 		if (move_after == 1) {
-			XMoveWindow(dpy, win_id, ret_x, ret_y);
+			XMoveWindow(dpy, win_id, final_x, final_y);
 			XSync(dpy, False);
 		}
 
