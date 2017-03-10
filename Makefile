@@ -21,7 +21,8 @@ CC = gcc
 
 SRC = \
 	wtfc.c \
-	wtsr.c
+	wtsr.c \
+	wrsr.c
 DEP = common.c
 OBJ = ${SRC:.c=.o}
 BIN = ${SRC:.c=}
@@ -29,11 +30,14 @@ MAN = $(SRC:.c=.1.gz)
 
 all: wtfc wtsr install
 
+wtfc: wtfc.c $(DEP)
+	$(CC) wtfc.c $(DEP) -o wtfc $(CFLAGS) $(LDFLAGS)
+
 wtsr: wtsr.c $(DEP)
 	$(CC) wtsr.c $(DEP) -o wtsr $(CFLAGS) $(LDFLAGS)
 
-wtfc: wtfc.c $(DEP)
-	$(CC) wtfc.c $(DEP) -o wtfc $(CFLAGS) $(LDFLAGS)
+wrsr: wrsr.c $(DEP)
+	$(CC) wrsr.c $(DEP) -o wrsr $(CFLAGS) $(LDFLAGS)
 
 install: $(BIN)
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
