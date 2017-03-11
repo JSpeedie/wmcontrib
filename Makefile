@@ -22,7 +22,8 @@ CC = gcc
 SRC = \
 	wtfc.c \
 	wtsr.c \
-	wrsr.c
+	wrsr.c \
+	cfw.c
 DEP = common.c
 OBJ = ${SRC:.c=.o}
 BIN = ${SRC:.c=}
@@ -38,6 +39,9 @@ wtsr: wtsr.c $(DEP)
 
 wrsr: wrsr.c $(DEP)
 	$(CC) wrsr.c $(DEP) -o wrsr $(CFLAGS) $(LDFLAGS)
+
+cfw: cfw.c $(DEP)
+	$(CC) cfw.c $(DEP) -o cfw $(CFLAGS) $(LDFLAGS)
 
 install: $(BIN)
 	@mkdir -p ${DESTDIR}${PREFIX}/bin

@@ -22,6 +22,7 @@ int ERR_RATIO_NOT_IN_RANGE =         6;
 int ERR_NO_VALID_DIR =               7;
 int ERR_INVALID_DIRECTION =          8;
 int ERR_CARDINAL_NOT_GIVEN =         9;
+int ERR_COULDNT_LOC_FOCUS_WIN =      10;
 
 /** Returns an int of 0 if the Window 'win' exists or an int representing
  * the error it ran into.
