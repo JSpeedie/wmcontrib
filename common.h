@@ -11,6 +11,14 @@ extern int ERR_NO_VALID_DIR;
 extern int ERR_INVALID_DIRECTION;
 extern int ERR_CARDINAL_NOT_GIVEN;
 extern int ERR_COULDNT_LOC_FOCUS_WIN;
+extern int ERR_No_WINDOW_IN_DIR;
+
+/* Constants to represent the cardinal directions */
+extern int NORTH;
+extern int EAST;
+extern int SOUTH;
+extern int WEST;
+extern int AMBIGUOUS;
 
 int window_exists(Window);
 int get_screen_number_of_win(Window, Display *, int, int *);

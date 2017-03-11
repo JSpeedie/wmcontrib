@@ -15,16 +15,8 @@
 #include "common.h"
 
 Display *dpy;
-int compatible = 0;
 int focus = 0;
 int stop = 1;
-
-/* Constants to represent the cardinal directions */
-const int NORTH = 0;
-const int EAST = 1;
-const int SOUTH = 2;
-const int WEST = 3;
-const int AMBIGUOUS = 3;
 
 void print_help(void) {
 	fprintf(stderr, "usage: wtfc -[undslwre] -[fNc]\n");
@@ -146,7 +138,7 @@ int get_closest_win_in_dir(Window *closest_return, int dir) {
 	}
 
 	*closest_return = -1;
-	return 23489;
+	return ERR_NO_WINDOW_IN_DIR;
 }
 
 /*
@@ -221,18 +213,20 @@ int main(int argc, char **argv) {
 			} else if (ret == ERR_NO_VALID_DIR) {
 				fprintf(stderr, "wtfc: Given invalid direction.\n");
 				exit(ret);
-			}
-
-			/* If the 'c' option flag wasn't used, if a Window wasn't
-			 * found, then wtfc prints out the Window currently focused
-			 */
-			if (stop == 1) {
-				Window current_window;
-				int focus_status;
-				XGetInputFocus(dpy, &current_window, &focus_status);
-				printf("0x%08x\n", current_window);
-			} else {
-				exit(-1);
+			} else if (ret == ERR_NO_WINDOW_IN_DIR) {
+				/* If the 'c' option flag wasn't used, if a Window wasn't
+				 * found, then wtfc prints out the Window currently focused
+				 */
+				if (stop == 1) {
+					Window current_window;
+					int focus_status;
+					XGetInputFocus(dpy, &current_window, &focus_status);
+					printf("0x%08x\n", current_window);
+				} else {
+					fprintf(stderr, "wtfc: Could not find any windows in given " \
+						"direction.\n");
+					exit(ret);
+				}
 			}
 		/* If there is a window in the given cardinal direction */
 		} else {

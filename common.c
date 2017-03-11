@@ -23,6 +23,14 @@ int ERR_NO_VALID_DIR =               7;
 int ERR_INVALID_DIRECTION =          8;
 int ERR_CARDINAL_NOT_GIVEN =         9;
 int ERR_COULDNT_LOC_FOCUS_WIN =      10;
+int ERR_NO_WINDOW_IN_DIR =           11;
+
+/* Constants to represent the cardinal directions */
+int NORTH = 0;
+int EAST = 1;
+int SOUTH = 2;
+int WEST = 3;
+int AMBIGUOUS = 3;
 
 /** Returns an int of 0 if the Window 'win' exists or an int representing
  * the error it ran into.
