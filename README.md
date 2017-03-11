@@ -6,9 +6,10 @@ A collection of C programs created to make use of X with no window managers
 
 ## Programs/Contents
 
-wmcontrib consists (currently) of 3 programs: wtfc, and wtsr. They stand for:  
+wmcontrib consists (currently) of 3 programs: wtfc, wtsr, and wrsr. They stand for:  
 **WTFC:** **W**indow **T**ransfer **F**ocus **C**ardinal  
-**WTSR:** **W**indow **T**eleport **S**creen **R**elative
+**WTSR:** **W**indow **T**eleport **S**creen **R**elative  
+**WRSR:** **W**indow **R**esize **S**creen **R**elative
 
 
 ### wtfc
@@ -49,9 +50,24 @@ below.
 ![wtsr](https://github.com/JSpeedie/wmcontrib/blob/master/wtsr.gif?raw=true)
 
 
+### wrsr
+
+wrsr works similarly to wtsr. It takes 1 or 2 ratios representing a width,
+height, or both and resizes a given window to those ratios relative to the
+screen it is on. For instance, `wrsr -w 1 -h 1 -W $(pfw)` will resize the
+currently focused window to the full size of the screen it was on when the call
+was made. Note that this does not include borders so part of the window may
+appear off screen. To take in account border sizes, use the `-b` flag.
+`wrsr -w 1 -h 1 -W $(pfw) -b` will resize the window to the full size of the
+screen, accounting for border width. Just like `wtsr`, `wrsr` accepts doubles.
+A call of `wrsr -w 0.252525 -h 0.00001 =W $(pfw)` will resize the width to
+25.2525% of the screen width and make the height 0.001% of the height. In cases
+where either the new width or height would be 0, the program returns 1. This
+is because you cannot have a window with a width or height or 0.
+
+
 ## To be added
 
-I plan on making some gifs/webms to show what these programs look like in
-action (there's one for wtsr, but that will be replaced to show how it's
-functionality has been changed to allow for more possibilities), but that
-will have to wait for now.
+* Make wtfc gif
+* Make wrsr gif
+* Possibly remake wtsr gif to show new possiblities
