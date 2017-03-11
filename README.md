@@ -6,26 +6,25 @@ A collection of C programs created to make use of X with no window managers
 
 ## Programs/Contents
 
-wmcontrib consists (currently) of 3 programs: wtfc, wtsr, and wrsr. They stand for:  
+wmcontrib consists (currently) of 4 programs. They are:
 **WTFC:** **W**indow **T**ransfer **F**ocus **C**ardinal  
 **WTSR:** **W**indow **T**eleport **S**creen **R**elative  
-**WRSR:** **W**indow **R**esize **S**creen **R**elative
+**WRSR:** **W**indow **R**esize **S**creen **R**elative  
+**CFW:** **C**urrently **F**ocused **W**indow
 
 
 ### wtfc
 
-wtfc was created to make up for the lack of (in a no-wm setup) what I deem
-the core feature of tiling window managers; being able to use the keyboard
-to focus windows to the left, right, above or below the currently focused
-window. wtfc has designed to be a little more useful than that. You can pass
-arguments to wtfc to focus or to not focus the window it finds to the left or
-right, etc. This could be useful if you wanted to hack together a bash script
-to swap a window with the window on its' left, right or etc. Obviously this
-has more potential, but I will leave that to the user.
+wtfc was created to make up for the lack of (in a no-wm setup), what I deem
+the core feature of tiling window managers; being able to focus neighbouring
+windows using the keyboard. wtfc was designed to be a little more useful than
+that. You can pass arguments to wtfc to focus or to not focus the window it
+finds. This could be useful if you wanted to hack together a bash script
+to swap a window with a neighbouring window. Obviously this has more
+potential, but I will leave that to the user.
 
-**Note** that in some
-window managers, wtfc will not be able to focus the windows it finds due to
-the way some wms control window focusing.
+**Note** that in some window managers, wtfc will NOT be able to focus the
+windows it finds due to the way some wms control window focusing.
 
 
 ### wtsr
@@ -36,8 +35,8 @@ be wmvc. Apologies if this breaks anyones' binds.
 wtsr came about because I often would create a urxvt instance, set it to
 floating and then I'd drag it to a corner with my mouse. For instance, having
 a separate urxvt for svn, git or just for compiling the project. wtsr was
-designed to replace using the mouse and dragging the window. Instead you can
-use wtsr to move a given window to a given location, relative to the screen it
+designed to speed up/replace this process. Instead you can
+use wtsr to move a given window to a location, relative to the screen it
 is on. For instance, running `wtsr -x 1 -y 1 -w $(cfw)` will send the
 currently focused window to the bottom right corner of the screen it is
 currently on. `-x` and `-y` take `double`s. This means you could do
@@ -59,7 +58,7 @@ was made. Note that this does not include borders so part of the window may
 appear off screen. To take in account border sizes, use the `-b` flag.
 `wrsr -w 1 -h 1 -W $(cfw) -b` will resize the window to the full size of the
 screen, accounting for border width. Just like `wtsr`, `wrsr` accepts doubles.
-A call of `wrsr -w 0.252525 -h 0.00001 =W $(cfw)` will resize the width to
+A call of `wrsr -w 0.252525 -h 0.00001 -W $(cfw)` will resize the width to
 25.2525% of the screen width and make the height 0.001% of the height. In cases
 where either the new width or height would be 0, the program returns 1. This
 is because you cannot have a window with a width or height or 0.
@@ -76,7 +75,6 @@ directory but doesn't want to install `wmutils`. I used `wmutil`'s `pfw` for
 a long time, but I feel that this repo shouldn't "depend" (most of my binds
 that use the programs in this repo use `pfw`) so heavily on something from
 another repo.
-
 
 
 ## To be added
