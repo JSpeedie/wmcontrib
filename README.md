@@ -63,6 +63,8 @@ A call of `wrsr -w 0.252525 -h 0.00001 -W $(cfw)` will resize the width to
 where either the new width or height would be 0, the program returns 1. This
 is because you cannot have a window with a width or height or 0.
 
+![wrsr](https://github.com/JSpeedie/wmcontrib/blob/master/wrsr.gif?raw=true)
+
 
 ### cfw
 
@@ -82,6 +84,5 @@ another repo.
 ## To be added
 
 * Make wtfc gif
-* Make wrsr gif
 * Possibly remake wtsr gif to show new possiblities
-* Make small cfw gif
+* Optimize gifs further so their filesizes aren't huge
