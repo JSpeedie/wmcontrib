@@ -76,6 +76,8 @@ a long time, but I feel that this repo shouldn't "depend" (most of my binds
 that use the programs in this repo use `pfw`) so heavily on something from
 another repo.
 
+![cfw](https://github.com/JSpeedie/wmcontrib/blob/master/cfw.gif?raw=true)
+
 
 ## To be added
 
