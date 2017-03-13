@@ -85,4 +85,3 @@ another repo.
 ## To be added
 
 * Make wtfc gif
-* Maybe optimize cfw and wrsr gifs further so that their file sizes are < 1 MB

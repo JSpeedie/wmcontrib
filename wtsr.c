@@ -141,10 +141,12 @@ int main(int argc, char **argv) {
 
 	if (use_x == 0 && use_y == 0) {
 		fprintf(stderr, "wtsr: Neither an x nor y ratio were given.\n");
+		print_help();
 		exit(ERR_NEITHER_RATIO_GIVEN);
 	}
 	if (window_given == 0) {
 		fprintf(stderr, "wtsr: Window ID was not given.\n");
+		print_help();
 		exit(ERR_WINDOW_NOT_GIVEN);
 	}
 	if (window_exists(win_id) != 0) {
@@ -159,11 +161,9 @@ int main(int argc, char **argv) {
 	/* Check if the program was given valid relative x and relative y values */
 	if (relative_x > 1 || relative_x < 0) {
 		fprintf(stderr, "wtsr: Relative x value provided was not within 0 <= value <= 1\n");
-		print_help();
 		exit(ERR_RATIO_NOT_IN_RANGE);
 	} else if (relative_y > 1 || relative_y < 0) {
 		fprintf(stderr, "wtsr: Relative y value provided was not within 0 <= value <= 1\n");
-		print_help();
 		exit(ERR_RATIO_NOT_IN_RANGE);
 	/* If the program was given valid parameters for those variables */
 	} else {
