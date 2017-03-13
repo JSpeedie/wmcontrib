@@ -40,10 +40,10 @@ use wtsr to move a given window to a location, relative to the screen it
 is on. For instance, running `wtsr -x 1 -y 1 -w $(cfw)` will send the
 currently focused window to the bottom right corner of the screen it is
 currently on. `-x` and `-y` take `double`s. This means you could do
-`wtsr -x 0.7593 -y 1 -w $(cfw)` to send the currently focused window to
-the bottom of the screen, 75.93% of the way to being all the way in the
-bottom right corner. Examples where `-x` and `-y` = 0, 1, 0.5 and `-x` = 0.5
-`-y` = 0.7593 are shown below.
+`wtsr -x 0.7593 -y 0.5 -w $(cfw)` to send the currently focused window to
+the middle of the screen in the y, 75.93% of the way to the right.
+Examples where `-x` and `-y` = 0, 1, 0.5 and `-x` = 0.5 `-y` = 0.7593 are
+shown below.
 
 ![wtsr](https://github.com/JSpeedie/wmcontrib/blob/master/wtsr.gif?raw=true)
 
@@ -60,8 +60,8 @@ appear off screen. To take in account border sizes, use the `-b` flag.
 screen, accounting for border width. Just like `wtsr`, `wrsr` accepts doubles.
 A call of `wrsr -w 0.252525 -h 0.00001 -W $(cfw)` will resize the width to
 25.2525% of the screen width and make the height 0.001% of the height. In cases
-where either the new width or height would be 0, the program returns 1. This
-is because you cannot have a window with a width or height or 0. Examples
+where either the new width or height would be 0, the program sets it (or them)
+to 1, because you cannot have a window with a width or height or 0. Examples
 where `-w` and `-h` = 0.25, 0.5, 0.75, 1 are shown below.
 
 ![wrsr](https://github.com/JSpeedie/wmcontrib/blob/master/wrsr.gif?raw=true)
@@ -85,5 +85,4 @@ another repo.
 ## To be added
 
 * Make wtfc gif
-* Possibly remake wtsr gif to show new possiblities
-* Optimize gifs further so their filesizes aren't huge
+* Maybe optimize cfw and wrsr gifs further so that their file sizes are < 1 MB
