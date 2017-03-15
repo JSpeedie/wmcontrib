@@ -21,10 +21,15 @@ windows using the keyboard. wtfc was designed to be a little more useful than
 that. You can pass arguments to wtfc to focus or to not focus the window it
 finds. This could be useful if you wanted to hack together a bash script
 to swap a window with a neighbouring window. Obviously this has more
-potential, but I will leave that to the user.
+potential, but I will leave that to the user. Below you see an example of using
+`wtfc` to focus the windows to the left (`-lf`) and to the right (`-rf`) of
+the currently focused window. The gif also shows the window ids via `cfw`
+to demonstrate the output of `wtfc`.
 
 **Note** that in some window managers, wtfc will NOT be able to focus the
 windows it finds due to the way some wms control window focusing.
+
+![wtfc](https://github.com/JSpeedie/wmcontrib/blob/master/wtfc.gif?raw=true)
 
 
 ### wtsr
@@ -84,4 +89,4 @@ another repo.
 
 ## To be added
 
-* Make wtfc gif
+* More programs
