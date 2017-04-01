@@ -154,7 +154,11 @@ int main(int argc, char **argv) {
 		exit(ERR_WIN_NOT_FOUND);
 	}
 
-	Display *dpy = XOpenDisplay(0);
+	Display *dpy;
+	if (!(dpy = XOpenDisplay(0))) {
+		fprintf(stderr, "wtsr: Couldn't open X display\n");
+		exit(ERR_COULDNT_OPEN_X_DISPLAY);
+	}
 	XWindowAttributes win_attrib;
 	XGetWindowAttributes(dpy, win_id, &win_attrib);
 
