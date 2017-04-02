@@ -96,7 +96,12 @@ x or y direction. I didn't like how `wmutils` `wmv` didn't allow you to move
 the window outside of the screen borders. Sometimes I like to have the window
 just peeking onto the screen (if I'm running a MySql or testing a server program
 of mine that I want to check on only once in a while). Similarly to `cfw`,
-I also like not depending on yet another part of `wmutils`.
+I also like not depending on yet another part of `wmutils`. The gif below
+showcases a user moving a window in a loop pattern by moving it 50 pixels
+at a time in a given direction. 2 of the commands used are:
+`wsft -x -50 -y 0 -w $(cfw) -m` and `wsft -x 0 -y 50 -w $(cfw) -m`.
+
+![wsft](https://github.com/JSpeedie/wmcontrib/blob/master/wsft.gif?raw=true)
 
 
 ### wrsz
@@ -109,6 +114,6 @@ should have ones to resize them too.
 
 ## To be added
 
-* wsft and wrsz gifs
+* wrsz gif
 * more zoomed in wtfc and cfw gifs?
 * Flags so wsft and wrsz don't shift or resize outside of the current screen
