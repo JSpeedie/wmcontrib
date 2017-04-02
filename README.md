@@ -7,10 +7,12 @@ A collection of C programs created to make use of X with no window managers
 ## Programs/Contents
 
 wmcontrib consists (currently) of 4 programs. They are:  
-**WTFC:** **W**indow **T**ransfer **F**ocus **C**ardinal  
-**WTSR:** **W**indow **T**eleport **S**creen **R**elative  
-**WRSR:** **W**indow **R**esize **S**creen **R**elative  
-**CFW:** **C**urrently **F**ocused **W**indow
+**wtfc:** **W**indow **T**ransfer **F**ocus **C**ardinal  
+**wtsr:** **W**indow **T**eleport **S**creen **R**elative  
+**wrsr:** **W**indow **R**esize **S**creen **R**elative  
+**cfw:** **C**urrently **F**ocused **W**indow  
+**wsft:** **W**indow **S**hi**F****T**  
+**wsft:** **W**indow **R**e**S**i**Z**e
 
 
 ### wtfc
@@ -87,6 +89,26 @@ another repo.
 ![cfw](https://github.com/JSpeedie/wmcontrib/blob/master/cfw.gif?raw=true)
 
 
+### wsft
+
+Very basic program that just shifts a given window by a given amount in the
+x or y direction. I didn't like how `wmutils` `wmv` didn't allow you to move
+the window outside of the screen borders. Sometimes I like to have the window
+just peeking onto the screen (if I'm running a MySql or testing a server program
+of mine that I want to check on only once in a while). Similarly to `cfw`,
+I also like not depending on yet another part of `wmutils`.
+
+
+### wrsz
+
+Also a basic program. Modifies the size of the given window by the given amount
+in the dimension (width or height). This came about as a compliment to `wsft`
+because if this repo was going to contain programs to shift the windows, it
+should have ones to resize them too.
+
+
 ## To be added
 
-* More programs
+* wsft and wrsz gifs
+* more zoomed in wtfc and cfw gifs?
+* Flags so wsft and wrsz don't shift or resize outside of the current screen

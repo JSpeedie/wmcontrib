@@ -21,7 +21,7 @@ int print_results = 1;
 int resize_after = 0;
 
 void print_help(void) {
-	fprintf(stderr, "usage: wrsz -[wh] <new_size> -W <wid> [OPTIONS]\n");
+	fprintf(stderr, "usage: wrsz -[wh] <pixels> -W <wid> [OPTIONS]\n");
 }
 
 int main(int argc, char **argv) {
@@ -93,20 +93,20 @@ int main(int argc, char **argv) {
 
 	/* Only change the width if given a new width to set it to*/
 	if (use_w) {
-		final_w = given_w;
+		final_w = win_attrib.width + given_w;
 	} else {
 		final_w = win_attrib.width;
 	}
 	/* Only change the height if given a new height to set it to*/
 	if (use_h) {
-		final_h = given_h;
+		final_h = win_attrib.height + given_h;
 	} else {
 		final_h = win_attrib.height;
 	}
 
 	/* You cannot have a window of 0 width or height. */
-	if (final_w == 0) { final_w = 1; }
-	if (final_h == 0) { final_h = 1; }
+	if (final_w <= 0) { final_w = 1; }
+	if (final_h <= 0) { final_h = 1; }
 
 	/* option flags that take effect near the end of the process */
 	if (print_results == 1) {
