@@ -11,7 +11,7 @@ wmcontrib consists (currently) of 4 programs. They are:
 **wtsr:** **W**indow **T**eleport **S**creen **R**elative  
 **wrsr:** **W**indow **R**esize **S**creen **R**elative  
 **cfw:** **C**urrently **F**ocused **W**indow  
-**wsft:** **W**indow **S**hi**F****T**  
+**wsft:** **W**indow **S**hi**FT**  
 **wsft:** **W**indow **R**e**S**i**Z**e
 
 
@@ -107,13 +107,17 @@ at a time in a given direction. 2 of the commands used are:
 ### wrsz
 
 Also a basic program. Modifies the size of the given window by the given amount
-in the dimension (width or height). This came about as a compliment to `wsft`
+in the dimension (width or height). This came about as a complement to `wsft`
 because if this repo was going to contain programs to shift the windows, it
-should have ones to resize them too.
+should have ones to resize them too. The gif below showcases a user resizing
+a window by adding or subtracting 50 pixels at a time in a given dimension.
+2 of the commands used are:
+`wrsz -w 50 -h 0 -W $(cfw) -r` and `wrsz -w 0 -h -50 -W $(cfw) -r`.
+
+![wrsz](https://github.com/JSpeedie/wmcontrib/blob/master/wrsz.gif?raw=true)
 
 
 ## To be added
 
-* wrsz gif
 * more zoomed in wtfc and cfw gifs?
 * Flags so wsft and wrsz don't shift or resize outside of the current screen
