@@ -17,8 +17,10 @@ Display *dpy;
 int use_x = 0;
 int use_y = 0;
 int window_given = 0;
+int offset_borders = 0;
 int print_results = 1;
 int move_after = 0;
+int contain = 0;
 
 void print_help(void) {
 	fprintf(stderr, "usage: wsft -[xy] <pixels_to_shift> -w <wid> [OPTIONS]\n");
@@ -41,12 +43,14 @@ int main(int argc, char **argv) {
 		{ "window-id",		required_argument,	NULL,	'w' },
 		/* fine functionality options */
 		{ "no-print",		no_argument,	NULL,	'N' },
+		{ "offset-border",	no_argument,	NULL,	'b' },
 		{ "move-window",	no_argument,	NULL,	'm' },
+		{ "contain",		no_argument,	NULL,	'c' },
 		{ 0, 0, 0, 0 }
 	};
 
 	while ((opt = getopt_long(argc, argv, \
-		"x:y:w:Nm", opt_table, NULL)) != -1) {
+		"x:y:w:Nbmc", opt_table, NULL)) != -1) {
 		switch (opt) {
 			/* relative to screen options */
 			case 'x':
@@ -64,8 +68,10 @@ int main(int argc, char **argv) {
 				win_id = strtoul(&optarg[0], NULL, 0);
 				break;
 			/* fine functionality options */
+			case 'b': offset_borders = 1; break;
 			case 'N': print_results = 0; break;
 			case 'm': move_after = 1; break;
+			case 'c': contain = 1; break;
 		}
 	}
 
@@ -103,6 +109,33 @@ int main(int argc, char **argv) {
 		final_y = win_attrib.y + given_y;
 	} else {
 		final_y = win_attrib.y;
+	}
+
+	if (contain == 1) {
+		int display_x, display_y, display_right, display_bottom;
+		if (get_full_display_dims(&display_x, &display_right, &display_y, &display_bottom) == 0) {
+			printf("%d %d %d %d \n", display_x, display_right, display_y, display_bottom);
+			/* If the window is to be moved outside of the bounds of the display */
+			if (final_x < display_x) {
+				final_x = display_x;
+			} else if ((final_x + win_attrib.width) > display_right) {
+				final_x = display_right - win_attrib.width;
+				if (offset_borders == 1) {
+					final_x -= 2 * win_attrib.border_width;
+				}
+			}
+			if (final_y < display_y) {
+				final_y = display_y;
+			} else if ((final_y + win_attrib.height) > display_right) {
+				final_x = display_right - win_attrib.width;
+				if (offset_borders == 1) {
+					final_x -= 2 * win_attrib.border_width;
+				}
+			}
+		} else {
+			fprintf(stderr, "wsft: Couldn't open X display\n");
+			exit(ERR_COULDNT_OPEN_X_DISPLAY);
+		}
 	}
 
 	/* option flags that take effect near the end of the process */

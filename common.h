@@ -22,5 +22,6 @@ extern int AMBIGUOUS;
 
 int window_exists(Window);
 int get_screen_number_of_win(Window, Display *, int, int *);
+int get_full_display_dims(int *, int *, int *, int *);
 
 #endif
