@@ -118,3 +118,40 @@ int get_screen_number_of_win(Window win, Display *dpy, int use_anchors, \
 	 */
 	return ERR_SCREEN_OF_WIN_NOT_FOUND;
 }
+
+int get_full_display_dims(int *ret_left_x, int *ret_right_x,
+	int *ret_top_y, int *ret_bottom_y) {
+
+	Display *display;
+	if (!(display = XOpenDisplay(0))) { return ERR_COULDNT_OPEN_X_DISPLAY; }
+
+	XRRScreenResources *screen_res =
+		XRRGetScreenResources(display, DefaultRootWindow(display));
+
+	*ret_left_x = INT_MAX;
+	*ret_right_x = INT_MIN;
+	*ret_top_y = INT_MAX;
+	*ret_bottom_y = INT_MIN;
+	int nmonitors = 0;
+	XRRGetMonitors(display, DefaultRootWindow(display), 1, &nmonitors);
+
+	for (int i = 0; i < nmonitors; i++) {
+		XRRCrtcInfo *screen_info =
+			XRRGetCrtcInfo(display, screen_res, screen_res->crtcs[i]);
+
+		if (screen_info->x < *ret_left_x) {
+			*ret_left_x = screen_info->x;
+		}
+		if (((long) (screen_info->x + screen_info->width)) > *ret_right_x) {
+			*ret_right_x = screen_info->x + screen_info->width;
+		}
+		if (screen_info->y < *ret_top_y) {
+			*ret_top_y = screen_info->y;
+		}
+		if (((long) (screen_info->y + screen_info->height)) > *ret_bottom_y) {
+			*ret_bottom_y = screen_info->y + screen_info->height;
+		}
+	}
+
+	return 0;
+}
