@@ -12,7 +12,7 @@ wmcontrib consists (currently) of 4 programs. They are:
 **wrsr:** **w**indow **r**esize **s**creen **r**elative  
 **cfw:** **c**urrently **f**ocused **w**indow  
 **wsft:** **w**indow **s**hi**ft**  
-**wsft:** **w**indow **r**e**s**i**z**e  
+**wsrz:** **w**indow **r**e**s**i**z**e  
 **wuc:** **w**indow **u**nder **c**ursor
 
 
@@ -133,4 +133,3 @@ windows it finds due to the way some wms control window focusing.
 
 * add wuc gif
 * more zoomed in wtfc and cfw gifs?
-* Add `contain` flag for wrsz?
