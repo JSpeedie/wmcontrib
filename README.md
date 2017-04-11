@@ -6,7 +6,7 @@ A collection of C programs created to make use of X with no window managers
 
 ## Programs/Contents
 
-wmcontrib consists (currently) of 4 programs. They are:  
+wmcontrib consists (currently) of 7 programs. They are:  
 **wtfc:** **w**indow **t**ransfer **f**ocus **c**ardinal  
 **wtsr:** **w**indow **t**eleport **s**creen **r**elative  
 **wrsr:** **w**indow **r**esize **s**creen **r**elative  
