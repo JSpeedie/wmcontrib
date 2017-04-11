@@ -124,12 +124,15 @@ Fairly important program for pure X usage in my opinion. Simply outputs the
 id of the window under the cursor, if there is one. Using the `-f` flag,
 it will attempt to focus the window it finds as well. By binding `wuc -f` to
 mouse 1, you can have click-to-focus functionality without a window manager.
+In the gif below, a user hovers their mouse over 2 windows running the command
+`wuc -f` once the mouse is over the window they wish to focus.
 
 **Note** that in some window managers, `wuc` will NOT be able to focus the
 windows it finds due to the way some wms control window focusing.
 
+![wuc](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wuc.gif)
+
 
 ## To be added
 
-* add wuc gif
 * more zoomed in wtfc and cfw gifs?
