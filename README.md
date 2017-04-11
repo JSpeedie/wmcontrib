@@ -7,12 +7,13 @@ A collection of C programs created to make use of X with no window managers
 ## Programs/Contents
 
 wmcontrib consists (currently) of 4 programs. They are:  
-**wtfc:** **W**indow **T**ransfer **F**ocus **C**ardinal  
-**wtsr:** **W**indow **T**eleport **S**creen **R**elative  
-**wrsr:** **W**indow **R**esize **S**creen **R**elative  
-**cfw:** **C**urrently **F**ocused **W**indow  
-**wsft:** **W**indow **S**hi**FT**  
-**wsft:** **W**indow **R**e**S**i**Z**e
+**wtfc:** **w**indow **t**ransfer **f**ocus **c**ardinal  
+**wtsr:** **w**indow **t**eleport **s**creen **r**elative  
+**wrsr:** **w**indow **r**esize **s**creen **r**elative  
+**cfw:** **c**urrently **f**ocused **w**indow  
+**wsft:** **w**indow **s**hi**ft**  
+**wsft:** **w**indow **r**e**s**i**z**e  
+**wuc:** **w**indow **u**nder **c**ursor
 
 
 ### wtfc
@@ -28,10 +29,10 @@ potential, but I will leave that to the user. Below you see an example of using
 the currently focused window. The gif also shows the window ids via `cfw`
 to demonstrate the output of `wtfc`.
 
-**Note** that in some window managers, wtfc will NOT be able to focus the
+**Note** that in some window managers, `wtfc` will NOT be able to focus the
 windows it finds due to the way some wms control window focusing.
 
-![wtfc](https://github.com/JSpeedie/wmcontrib/blob/master/wtfc.gif?raw=true)
+![wtfc](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wtfc.gif)
 
 
 ### wtsr
@@ -52,7 +53,7 @@ the middle of the screen in the y, 75.93% of the way to the right.
 Examples where `-x` and `-y` = 0, 1, 0.5 and `-x` = 0.5 `-y` = 0.7593 are
 shown below.
 
-![wtsr](https://github.com/JSpeedie/wmcontrib/blob/master/wtsr.gif?raw=true)
+![wtsr](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wtsr.gif)
 
 
 ### wrsr
@@ -71,7 +72,7 @@ where either the new width or height would be 0, the program sets it (or them)
 to 1, because you cannot have a window with a width or height or 0. Examples
 where `-w` and `-h` = 0.25, 0.5, 0.75, 1 are shown below.
 
-![wrsr](https://github.com/JSpeedie/wmcontrib/blob/master/wrsr.gif?raw=true)
+![wrsr](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wrsr.gif)
 
 
 ### cfw
@@ -86,7 +87,7 @@ a long time, but I feel that this repo shouldn't "depend" (most of my binds
 that use the programs in this repo use `pfw`) so heavily on something from
 another repo.
 
-![cfw](https://github.com/JSpeedie/wmcontrib/blob/master/cfw.gif?raw=true)
+![cfw](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/cfw.gif)
 
 
 ### wsft
@@ -101,7 +102,7 @@ showcases a user moving a window in a loop pattern by moving it 50 pixels
 at a time in a given direction. 2 of the commands used are:
 `wsft -x -50 -y 0 -w $(cfw) -m` and `wsft -x 0 -y 50 -w $(cfw) -m`.
 
-![wsft](https://github.com/JSpeedie/wmcontrib/blob/master/wsft.gif?raw=true)
+![wsft](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wsft.gif)
 
 
 ### wrsz
@@ -114,10 +115,22 @@ a window by adding or subtracting 50 pixels at a time in a given dimension.
 2 of the commands used are:
 `wrsz -w 50 -h 0 -W $(cfw) -r` and `wrsz -w 0 -h -50 -W $(cfw) -r`.
 
-![wrsz](https://github.com/JSpeedie/wmcontrib/blob/master/wrsz.gif?raw=true)
+![wrsz](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wrsz.gif)
+
+
+### wuc
+
+Fairly important program for pure X usage in my opinion. Simply outputs the
+id of the window under the cursor, if there is one. Using the `-f` flag,
+it will attempt to focus the window it finds as well. By binding `wuc -f` to
+mouse 1, you can have click-to-focus functionality without a window manager.
+
+**Note** that in some window managers, `wuc` will NOT be able to focus the
+windows it finds due to the way some wms control window focusing.
 
 
 ## To be added
 
+* add wuc gif
 * more zoomed in wtfc and cfw gifs?
-* Flags so wsft and wrsz don't shift or resize outside of the current screen
+* Add `contain` flag for wrsz?

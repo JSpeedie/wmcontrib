@@ -2,7 +2,7 @@
 # © 2016 Julian Speedie
 
 # wmcontrib version
-VERSION = 0.3
+VERSION = 0.5
 # Paths
 PREFIX = /usr/local
 MANPREFIX = /usr/share/man
@@ -25,13 +25,14 @@ SRC = \
 	wrsr.c \
 	cfw.c \
 	wsft.c \
-	wrsz.c
+	wrsz.c \
+	wuc.c
 DEP = common.c
 OBJ = ${SRC:.c=.o}
 BIN = ${SRC:.c=}
 MAN = $(SRC:.c=.1.gz)
 
-all: wtfc wtsr install
+all: wtfc wtsr wrsr cfw wsft wrsz wuc install
 
 wtfc: wtfc.c $(DEP)
 	$(CC) wtfc.c $(DEP) -o wtfc $(CFLAGS) $(LDFLAGS)
@@ -51,11 +52,19 @@ wsft: wsft.c $(DEP)
 wrsz: wrsz.c $(DEP)
 	$(CC) wrsz.c $(DEP) -o wrsz $(CFLAGS) $(LDFLAGS)
 
+wuc: wuc.c $(DEP)
+	$(CC) wuc.c $(DEP) -o wuc $(CFLAGS) $(LDFLAGS)
+
 install: $(BIN)
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
 	@cp -f $(BIN) ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/wtfc
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/wtsr
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/wrsr
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/cfw
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/wsft
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/wrsz
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/wuc
 	@mkdir -p $(MANPREFIX)/man1/
 	@cp -f $(MAN) $(MANPREFIX)/man1/
 
