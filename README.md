@@ -135,4 +135,4 @@ windows it finds due to the way some wms control window focusing.
 
 ## To be added
 
-* more zoomed in wtfc and cfw gifs?
+* more zoomed in wsft and wrsz gifs?
