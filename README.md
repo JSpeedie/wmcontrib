@@ -14,6 +14,7 @@ wmcontrib consists (currently) of 9 programs. They are:
 **wsft:** **w**indow **s**hi**ft**  
 **wsrz:** **w**indow **r**e**s**i**z**e  
 **wuc:** **w**indow **u**nder **c**ursor  
+**BETA**  
 **wmc:** **w**indow **m**ove to **c**ursor  
 **wrc:** **w**indow **r**esize to **c**ursor
 
@@ -134,6 +135,8 @@ windows it finds due to the way some wms control window focusing.
 
 ![wuc](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wuc.gif)
 
+
+## BETA
 
 ### wmc
 
