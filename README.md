@@ -6,14 +6,16 @@ A collection of C programs created to make use of X with no window managers
 
 ## Programs/Contents
 
-wmcontrib consists (currently) of 7 programs. They are:  
+wmcontrib consists (currently) of 9 programs. They are:  
 **wtfc:** **w**indow **t**ransfer **f**ocus **c**ardinal  
 **wtsr:** **w**indow **t**eleport **s**creen **r**elative  
 **wrsr:** **w**indow **r**esize **s**creen **r**elative  
 **cfw:** **c**urrently **f**ocused **w**indow  
 **wsft:** **w**indow **s**hi**ft**  
 **wsrz:** **w**indow **r**e**s**i**z**e  
-**wuc:** **w**indow **u**nder **c**ursor
+**wuc:** **w**indow **u**nder **c**ursor  
+**wmc:** **w**indow **m**ove to **c**ursor  
+**wrc:** **w**indow **r**esize to **c**ursor
 
 
 ### wtfc
@@ -133,6 +135,18 @@ windows it finds due to the way some wms control window focusing.
 ![wuc](https://raw.githubusercontent.com/wiki/JSpeedie/wmcontrib/images/wuc.gif)
 
 
+### wmc
+
+Coming soon...
+
+
+### wrc
+
+Coming soon...
+
+
 ## To be added
 
-* more zoomed in wsft and wrsz gifs?
+* Write wmc and wrc man pages, readme overviews.
+* Make wmc and wrc gifs
+* Maybe more zoomed in wsft and wrsz gifs?
