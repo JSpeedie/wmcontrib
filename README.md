@@ -138,6 +138,9 @@ windows it finds due to the way some wms control window focusing.
 
 ## BETA
 
+The two programs below are currently being renamed. Until suitable names are
+found, and other kinks have been sorted out, they are not recommended for use.
+
 ### wmc
 
 Coming soon...
