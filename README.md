@@ -15,8 +15,8 @@ wmcontrib consists (currently) of 9 programs. They are:
 **wsrz:** **w**indow **r**e**s**i**z**e  
 **wuc:** **w**indow **u**nder **c**ursor  
 **BETA**  
-**wmc:** **w**indow **m**ove to **c**ursor  
-**wrc:** **w**indow **r**esize to **c**ursor
+**wucm:** **w**indow **u**nder **c**ursor **m**ove  
+**wucr:** **w**indow **u**nder **c**ursor **r**esize
 
 
 ### wtfc
@@ -141,18 +141,19 @@ windows it finds due to the way some wms control window focusing.
 The two programs below are currently being renamed. Until suitable names are
 found, and other kinks have been sorted out, they are not recommended for use.
 
-### wmc
+
+### wucm
 
 Coming soon...
 
 
-### wrc
+### wucr
 
 Coming soon...
 
 
 ## To be added
 
-* Write wmc and wrc man pages, readme overviews.
-* Make wmc and wrc gifs
+* Write wucm and wucr man pages, readme overviews.
+* Make wucm and wucr gifs
 * Maybe more zoomed in wsft and wrsz gifs?
