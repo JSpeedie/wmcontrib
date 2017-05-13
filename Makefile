@@ -27,14 +27,14 @@ SRC = \
 	wsft.c \
 	wrsz.c \
 	wuc.c \
-	wmc.c \
-	wrc.c
+	wucm.c \
+	wucr.c
 DEP = common.c
 OBJ = ${SRC:.c=.o}
 BIN = ${SRC:.c=}
 MAN = $(SRC:.c=.1.gz)
 
-all: wtfc wtsr wrsr cfw wsft wrsz wuc wmc install
+all: wtfc wtsr wrsr cfw wsft wrsz wuc wucm install
 
 wtfc: wtfc.c $(DEP)
 	$(CC) wtfc.c $(DEP) -o wtfc $(CFLAGS) $(LDFLAGS)
@@ -57,11 +57,11 @@ wrsz: wrsz.c $(DEP)
 wuc: wuc.c $(DEP)
 	$(CC) wuc.c $(DEP) -o wuc $(CFLAGS) $(LDFLAGS)
 
-wmc: wmc.c $(DEP)
-	$(CC) wmc.c $(DEP) -o wmc $(CFLAGS) $(LDFLAGS)
+wucm: wucm.c $(DEP)
+	$(CC) wucm.c $(DEP) -o wucm $(CFLAGS) $(LDFLAGS)
 
-wrc: wrc.c $(DEP)
-	$(CC) wrc.c $(DEP) -o wrc $(CFLAGS) $(LDFLAGS)
+wucr: wucr.c $(DEP)
+	$(CC) wucr.c $(DEP) -o wucr $(CFLAGS) $(LDFLAGS)
 
 install: $(BIN)
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
@@ -73,8 +73,8 @@ install: $(BIN)
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/wsft
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/wrsz
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/wuc
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/wmc
-	@chmod 755 ${DESTDIR}${PREFIX}/bin/wrc
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/wucm
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/wucr
 	@mkdir -p $(MANPREFIX)/man1/
 	@cp -f $(MAN) $(MANPREFIX)/man1/
 
