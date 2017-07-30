@@ -16,14 +16,14 @@
 Display *dpy;
 
 void print_help(void) {
-	fprintf(stderr, "usage: wmc\n");
+	fprintf(stderr, "usage: wucm\n");
 }
 
 int main(int argc, char **argv) {
 
 	Display *dpy;
 	if (!(dpy = XOpenDisplay(0))) {
-		fprintf(stderr, "wmc: Couldn't open X display\n");
+		fprintf(stderr, "wucm: Couldn't open X display\n");
 		exit(ERR_COULDNT_OPEN_X_DISPLAY);
 	}
 	Window root, orig_win, containing_win;
