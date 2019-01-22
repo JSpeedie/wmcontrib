@@ -97,6 +97,11 @@ int main(int argc, char **argv) {
 	XWindowAttributes win_attrib;
 	XGetWindowAttributes(dpy, win_id, &win_attrib);
 
+	if (use_x == 1) final_x = given_x;
+	else final_x = win_attrib.x;
+	if (use_y == 1) final_y = given_y;
+	else final_y = win_attrib.y;
+
 	if (contain == 1) {
 		int display_x, display_y, display_right, display_bottom;
 		if (get_full_display_dims(&display_x, &display_right, &display_y, &display_bottom) == 0) {
