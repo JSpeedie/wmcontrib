@@ -25,18 +25,17 @@ void print_help(void) {
 */
 int main(int argc, char **argv) {
 
-	int dim_lx;
-	int dim_rx;
-	int dim_ty;
-	int dim_by;
+	int lx;
+	int rx;
+	int ty;
+	int by;
 
 	// TODO: add "flag" for using anchors or not
-	int ret = get_monitor_dims_of_focused_screen(1, &dim_lx, &dim_rx, \
-		&dim_ty, &dim_by);
+	int ret = get_monitor_dims_of_focused_screen(1, &lx, &rx, &ty, &by);
 
 	if (ret == 0) {
 		fprintf(stdout, "%d %d %d %d\n", \
-			dim_lx, dim_ty, dim_rx, dim_by);
+			lx, ty, rx-lx, by-ty);
 	} else {
 		return ret;
 	}
