@@ -24,6 +24,7 @@ int ERR_INVALID_DIRECTION =          8;
 int ERR_CARDINAL_NOT_GIVEN =         9;
 int ERR_COULDNT_LOC_FOCUS_WIN =      10;
 int ERR_NO_WINDOW_IN_DIR =           11;
+int ERR_MONITOR_DNE =                12;
 
 /* Constants to represent the cardinal directions */
 int NORTH = 0;
@@ -139,6 +140,8 @@ int get_full_display_dims(int *ret_left_x, int *ret_right_x,
 		XRRCrtcInfo *screen_info =
 			XRRGetCrtcInfo(display, screen_res, screen_res->crtcs[i]);
 
+		fprintf(stdout, "%d %d %d %d\n", screen_info->x, screen_info->y, screen_info->width, screen_info->height);
+
 		if (screen_info->x < *ret_left_x) {
 			*ret_left_x = screen_info->x;
 		}
@@ -154,4 +157,95 @@ int get_full_display_dims(int *ret_left_x, int *ret_right_x,
 	}
 
 	return 0;
+}
+
+int get_monitor_dims(int *ret_left_x, int *ret_right_x,
+	int *ret_top_y, int *ret_bottom_y, int i) {
+
+	Display *display;
+	if (!(display = XOpenDisplay(0))) { return ERR_COULDNT_OPEN_X_DISPLAY; }
+
+	XRRScreenResources *screen_res =
+		XRRGetScreenResources(display, DefaultRootWindow(display));
+
+	*ret_left_x = INT_MAX;
+	*ret_right_x = INT_MIN;
+	*ret_top_y = INT_MAX;
+	*ret_bottom_y = INT_MIN;
+	int nmonitors = 0;
+	XRRGetMonitors(display, DefaultRootWindow(display), 1, &nmonitors);
+
+	/* If the user requests a screen outside of the number of monitors, exit */
+	if (i >= nmonitors) {
+		return ERR_MONITOR_DNE;
+	}
+
+	XRRCrtcInfo *screen_info =
+		XRRGetCrtcInfo(display, screen_res, screen_res->crtcs[i]);
+
+	*ret_left_x = screen_info->x;
+	*ret_right_x = screen_info->x + screen_info->width;
+	*ret_top_y = screen_info->y;
+	*ret_bottom_y = screen_info->y + screen_info->height;
+
+	return 0;
+}
+
+int get_monitor_dims_of_focused_screen(int use_anchors, int *ret_left_x, int *ret_right_x,
+	int *ret_top_y, int *ret_bottom_y) {
+
+	Display *dpy;
+	if (!(dpy = XOpenDisplay(0))) { return ERR_COULDNT_OPEN_X_DISPLAY; }
+
+	/* Get currently focused window */
+	Window win = -1;
+	int focus_status;
+	XGetInputFocus(dpy, &win, &focus_status);
+	if (win == PointerRoot || win == None) { return ERR_WIN_NOT_FOUND; }
+
+	XRRScreenResources *screen_res =
+		XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
+	XWindowAttributes win_attr;
+	XGetWindowAttributes(dpy, win, &win_attr);
+
+	int det_x = 0;
+	int det_y = 0;
+	int nmonitors = 0;
+	XRRGetMonitors(dpy, win, 1, &nmonitors);
+
+	for (int i = 0; i < nmonitors; i++) {
+		XRRCrtcInfo *screen_info =
+			XRRGetCrtcInfo(dpy, screen_res, screen_res->crtcs[i]);
+
+		/* option flag for using the "anchor" (top left corner)  of a window
+		 * to determine what screen it belongs to */
+		if (use_anchors == 1) {
+			det_x = win_attr.x;
+			det_y = win_attr.y;
+		/* Use the center of the window to determine what screen it's on */
+		} else {
+			det_x = win_attr.x + ((win_attr.width)/2);
+			det_y = win_attr.y + ((win_attr.height)/2);
+		}
+
+		/* If the window is on the ith screen in the x */
+		if (det_x >= screen_info->x &&
+			det_x < (screen_info->x + screen_info->width)) {
+			/* If the window is on the ith screen in the y */
+			if (det_y >= screen_info->y &&
+				det_y < (screen_info->y + screen_info->height)) {
+
+				*ret_left_x = screen_info->x;
+				*ret_right_x = screen_info->x + screen_info->width;
+				*ret_top_y = screen_info->y;
+				*ret_bottom_y = screen_info->y + screen_info->height;
+				return 0;
+			}
+		}
+	}
+
+	/* If the function has not returned yet, then it could not find a screen
+	 * on which 'win' resides.
+	 */
+	return ERR_SCREEN_OF_WIN_NOT_FOUND;
 }
